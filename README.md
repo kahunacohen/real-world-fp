@@ -25,4 +25,4 @@ function addData(path) {
 
 This function is not pure because it performs side effects--reading data from the file-system. What if the file isn't there, or the file doesn't have the right permissions? What if someone changes the content in the file specified by `path`? The function isn't guarenteed to return the same result given the same file path input. It depends on factors external to the function.
 
-Also note, that it's imperative, meaning reading the function reads like a recipe of how to achieve the specific goal instead of a specification.
+Additionally, the function is imperative. It reads like point-by-point directions on how to get from point a to point b, instead of a general specification of how the algorithm should perform its business.
