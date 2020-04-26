@@ -23,6 +23,6 @@ function addData(path) {
 }
 ```
 
-It's not pure because it reads from the file-system. What if the file isn't there, or doesn't have the right permissions? The function won't always return the same result given the path input. It depends on data outside of the function itself.
+This function is not pure because it performs side effects--reading data from the file-system. What if the file isn't there, or the file doesn't have the right permissions? What if someone changes the content in the file specified by `path`? The function isn't guarenteed to return the same result given the same file path input. It depends on factors external to the function.
 
 Also note, that it's imperative, meaning reading the function reads like a recipe of how to achieve the specific goal instead of a specification.
