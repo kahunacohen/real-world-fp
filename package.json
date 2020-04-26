@@ -1,0 +1,11 @@
+{
+  "name": "real-world-fx",
+  "version": "1.0.0",
+  "description": "Introducing a Functional Programming Paradigm to Existing Web App Code Bases",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aaron Cohen",
+  "license": "ISC"
+}
