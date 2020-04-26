@@ -7,4 +7,4 @@ Functional programming is a paradigm wherein we solve larger problems by fitting
 
 First, what are pure functions? Pure functions are simply functions that given an input x, always return the same output y. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.)  in the process of calculating y. For example, this would not be a pure function:
 
-https://github.com/kahunacohen/real-world-fx/blob/ae5b5345a2ab91b9c5d8af03322099bf83b72d58/src/add-rows-procedural/index.test.js#L3-L11
+
