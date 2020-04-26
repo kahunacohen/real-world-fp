@@ -7,4 +7,16 @@ Functional programming is a paradigm wherein we solve larger problems by fitting
 
 First, what are pure functions? Pure functions are simply functions that given an input x, always return the same output y. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.)  in the process of calculating y. For example, this would not be a pure function:
 
+```js
+const fs = require("fs");
 
+function addData(path) {
+  let ret = 0;
+  const data = fs.readFileSync(path, { encoding: "utf8" });
+  for (const line of data.split("\n")) {
+    const [x, y] = line.split(",");
+    ret += parseInt(x) + parseInt(y);
+  }
+  return ret;
+}
+```
