@@ -4,8 +4,12 @@
   "description": "Introducing a Functional Programming Paradigm to Existing Web App Code Bases",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "find ./src -name '*.js' -exec prettier --write {} +"
   },
   "author": "Aaron Cohen",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "prettier": "^2.0.5"
+  }
 }
