@@ -1,4 +1,4 @@
-# Introducing a Functional Programming Paradigm to Existing Web App Code Bases
+# Integrating Functional Programming into Existing Web App Code Bases
 
 In this post I'll discuss what functional programming is, why it can be advantagous and how to integrate this style into a real-world, existing project written mainly in a procedural and/or object-oriented style.
 
