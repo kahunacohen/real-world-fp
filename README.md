@@ -13,6 +13,7 @@ Here's an [example](src/add-rows-procedural/index.test.js) of a typical imperati
 100,0
 1,1
 ```
+Given this input, the following function would return `105`:
 
 ```js
 const fs = require("fs");
