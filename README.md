@@ -6,7 +6,13 @@ Functional programming is a paradigm wherein we solve larger problems by fitting
 
 First, what are pure functions? Pure functions are simply functions that given an input *x*, always return the same output *y*. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.). 
 
-Here's an [example](src/add-rows-procedural/index.test.js) of a typical imperative, impure function that reads number pairs on each line from a CSV file and sums all the lines:
+Here's an [example](src/add-rows-procedural/index.test.js) of a typical imperative, impure function that reads number pairs on each line from a CSV file and sums all the lines. The input file might look something like this:
+
+```
+1,2
+100,0
+1,1
+```
 
 ```js
 const fs = require("fs");
