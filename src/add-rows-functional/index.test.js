@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const addData = s => {
-  return s.split("\n").map(line => line.split(",").reduce((acc, col) => parseInt(acc) + parseInt(col)))
+  return s.split("\n").reduce((acc1, line) => acc1 + line.split(",").reduce((acc, col) => parseInt(acc) + parseInt(col)), 0)
 }
 
 describe("addData", () => {
