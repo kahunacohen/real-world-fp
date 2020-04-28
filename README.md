@@ -9,14 +9,14 @@ Fp is a way to solve larger problems by fitting together small, focused, *pure* 
 
 First, what are *pure* functions? Pure functions are simply functions that given an input *x*, always return the same output *y*. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.). 
 
-Here's an [example](src/add-rows-procedural/index.test.js) of a typical imperative, impure function that reads arbitrary numbers on each line from a CSV file and sums all the lines. The input file might look something like this:
+Here's an [example](src/add-rows-procedural/index.test.js) of a typical imperative, impure function that reads arbitrary numbers on each line from a CSV file and sums all the columns. The input file might look something like this:
 
 ```
-1,2
-100,0
+1,2,3
+100,0,1
 1,1
 ```
-Given this input, the following function would return `105`:
+Given this input, we expect the return value of the function to be `109` (`1 + 2 + 3 + 100 + 0 + 1 + 1 + 1`). Granted, in real life you'd use a CSV library, but bear with me...
 
 ```js
 const fs = require("fs");
@@ -24,9 +24,12 @@ const fs = require("fs");
 function addData(path) {
   let ret = 0;
   const data = fs.readFileSync(path, { encoding: "utf8" });
-  for (const line of data.split("\n")) {
-    const [x, y] = line.split(",");
-    ret += parseInt(x) + parseInt(y);
+  const lines = data.split("\n");
+  for (let i = 0; i < lines.length; i++) {;
+    const cols = lines[i].split(",");
+    for (let j = 0; j < cols.length; j++) {
+      ret += parseInt(cols[j]);
+    }
   }
   return ret;
 }
