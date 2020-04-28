@@ -1,4 +1,4 @@
-# Integrating Functional Programming into Existing Web App Code Bases
+# Real World Functional Programming
 
 In this post I'll discuss what functional programming (fp) is, why we'd want to use it and how to integrate this style into a real-world, existing project written mainly in a procedural and/or object-oriented style.
 
