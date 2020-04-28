@@ -5,7 +5,7 @@ In this post I'll discuss what functional programming (fp) is, why we'd want to 
 ## What is Functional Programming?
 With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/) fp is getting a lot of exposure in the JavaScript community. But what is it and how can our programs from it? Though the paradigm can get obtruse and academic, its principles are really quite basic. 
 
-Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring pure functions and immutable data structures over side-effects, stateful objects and mutable data. A program written in an fp style tends to read more like a spec rather than a step-by-step recipe.  
+Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring immutable data structures over side-effects, stateful objects and mutable data. A program written in an fp style tends to read more like a spec rather than a step-by-step recipe.  
 
 First, what are *pure* functions? Pure functions are simply functions that given an input *x*, always return the same output *y*. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.). 
 
