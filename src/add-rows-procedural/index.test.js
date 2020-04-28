@@ -3,7 +3,9 @@ const fs = require("fs");
 function addData(path) {
   let ret = 0;
   const data = fs.readFileSync(path, { encoding: "utf8" });
-  for (const line of data.split("\n")) {
+  const lines = data.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     const [x, y] = line.split(",");
     ret += parseInt(x) + parseInt(y);
   }
