@@ -94,11 +94,37 @@ class SalaryManager {
 }
 ```
 
-The class is used like this:
+We could test the class like this:
 
 ```js
-const salaryReporter = new SalaryManager(`${__dirname}/data.csv`);
-salaryReporter.report();
+describe("Salary Manager", () => {
+
+  // Ensure the report file is removed before and after
+  // the test.
+  const outPath = `${__dirname}/report.csv`;
+  const safeDelete = () => {
+    if (fs.existsSync(outPath)) {
+      fs.unlinkSync(outPath);
+    }
+  };
+  beforeEach(() => {
+    safeDelete();
+  });
+  afterEach(() => {
+    safeDelete();
+  });
+  
+  it("writeReport writes a correct CSV file", () => {
+    const salaryReporter = new SalaryManager(
+      `${__dirname}/employees.json`,
+      outPath
+    );
+    salaryReporter.writeReport();
+    expect(fs.readFileSync(outPath, { encoding: "utf-8" })).toEqual(
+      "Last Name,First Name\nDoe,John,97234.76\nJane,Mary,151928.21"
+    );
+  });
+});
 ```
 
 This function is *not* pure because it performs side effects, namely reading data from the file-system. The function's return value isn't soley dependent on its parameters. What if the file specified by `path` isn't there, or the file doesn't have read permissions? What if someone changes the content in the file specified by `path`? Additionally, the function is imperative. It reads like point-by-point directions on how to get from a file path to a sum. And lastly, it mutates its local data. The return value `ret` is changed in-place inside the `for` loop.
