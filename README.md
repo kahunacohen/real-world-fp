@@ -127,7 +127,14 @@ describe("Salary Manager", () => {
 });
 ```
 
-This function is *not* pure because it performs side effects, namely reading data from the file-system. The function's return value isn't soley dependent on its parameters. What if the file specified by `path` isn't there, or the file doesn't have read permissions? What if someone changes the content in the file specified by `path`? Additionally, the function is imperative. It reads like point-by-point directions on how to get from a file path to a sum. And lastly, it mutates its local data. The return value `ret` is changed in-place inside the `for` loop.
+The `writeReport` method is *not* pure because it performs side effects, namely reading and writing data from the file-system. Further, the method's return value isn't soley dependent on its parameters. What if:
+
+* `inPath` doesn't exist?
+* `inPath` doesn't have read permissions?
+* The content of `inPath` is changed by a person or process?
+* The caller doesn't have write permissions for `outPath`?
+
+Additionally, the function is imperative. It reads like point-by-point directions on how to get from a file path to a sum. And lastly, it mutates its local data. The return value `ret` is changed in-place inside the `for` loop.
 
 So, how do we make `addRows` more "functional"? Let's start with *walling off* the state, which in this case is the state of the file on the file system. Let's relegate the side effect of reading the file to our function's caller and focus just on parsing the CSV text. Let's also get rid of manually managing a for loop, and while we're at it, let's get rid of the mutable data:
 
