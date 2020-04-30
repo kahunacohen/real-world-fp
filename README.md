@@ -1,15 +1,66 @@
 # Real World Functional Programming
 
-In this post I'll discuss what functional programming (fp) is, why we'd want to use it and how to integrate this style into a real-world, existing project written mainly in a procedural and/or object-oriented style.
+This post is aimed for intermediate JavaScript programmers, and/or those with very limited functional programming experience. I'll discuss what functional programming (fp) is, why to use it and how to integrate it into a real-world, existing project written mainly in a procedural and/or object-oriented style.
 
 ## What is Functional Programming?
-With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/) fp is getting a lot of exposure in the JavaScript community. But what is it and how can our programs from it? Though the paradigm can get obtruse and academic, its principles are really quite basic. 
+With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/) fp is getting a lot of attention in the JavaScript community. But what is it and how can our programs from it? Though fp has a reputaiton for being too academic, its principles are really quite basic and it's had a huge affect on modern programming practices.
 
 Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring immutable data structures over side-effects, stateful objects and mutable data. A program written in an fp style tends to read more like a spec rather than a step-by-step recipe.  
 
 First, what are *pure* functions? Pure functions are simply functions that given an input *x*, always return the same output *y*. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.). 
 
-Here's an [example](src/add-rows-procedural/index.test.js) of a typical imperative, impure function that reads arbitrary numbers on each line from a CSV file and sums all the columns. The input file might look something like this:
+Let's look at a typical imperative, impure approach of transforming JSON in this form:  
+
+```
+[
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "pay": [
+      8333.33,
+      8333.33,
+      8333.33,
+      8021.45,
+      7023,
+      9023.67,
+      8333.33,
+      8333.33,
+      8333.33,
+      6500,
+      8333.33,
+      8333.33
+    ]
+  },
+  {
+    "firstName": "Mary",
+    "lastName": "Jane",
+    "pay": [
+      12083.33,
+      12083.33,
+      12083.33,
+      11000,
+      12102.24,
+      12083.33,
+      12083.33,
+      12083.33,
+      20076,
+      12083.33,
+      12083.33,
+      12083.33
+    ]
+  }
+]
+```
+to csv file in this form:
+
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
+
+
+function that reads arbitrary numbers on each line from a CSV file and sums all the columns. The input file might look something like this:
 
 ```
 1,2,3
