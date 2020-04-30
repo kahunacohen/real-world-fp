@@ -65,29 +65,31 @@ but you get the drift:
 
 ```js
 class SalaryManager {
-  constructor(path) {
+  constructor(inPath, outPath) {
     // Ignore possible errors.
-    this.data = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
+    this.data = JSON.parse(fs.readFileSync(inPath, { encoding: "utf-8" }));
+    this.outPath = outPath;
   }
-  report() {
+  writeReport() {
     // The first row of the return array are the headers
-    let ret = [["Last Name", "First Name", "Total Salary"]];
-    
+
+    let ret = [["Last Name", "First Name"]];
+
     // For each employee...
     for (let i = 0; i < this.data.length; i++) {
       const employee = this.data[i];
-      
-      // Sum the yearly payments
       let employeeTotal = 0;
+
+      // Sum the yearly payments
       for (let j = 0; j < employee.pay.length; j++) {
         employeeTotal += employee.pay[j];
       }
-      
+
       // Add a row with the employee's info, including total salary
       let row = [employee.lastName, employee.firstName, employeeTotal];
       ret.push(row);
     }
-    return ret.join("\n");
+    fs.writeFileSync(this.outPath, ret.join("\n"), { encoding: "utf-8" });
   }
 }
 ```
