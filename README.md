@@ -9,14 +9,14 @@ Fp is a way to solve larger problems by fitting together small, focused, *pure* 
 
 First, what are *pure* functions? Pure functions are simply functions that given an input *x*, always return the same output *y*. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.). 
 
-Let's look at a typical imperative, impure, object-oriented approach of transforming an array of objects to a CSV file. The data might look like this in a JSON file. Each numeric element in the `pay` array represents a monthly pay amount for the year:
+Let's take a look at a practical programming task that will help us understand the difference betweeen procedural and functional programming. Imagine data in a JSON file in this form:
 
 ```
 [
   {
     "firstName": "John",
     "lastName": "Doe",
-    "pay": [
+    "payments": [
       8333.33,
       8333.33,
       8333.33,
@@ -34,7 +34,7 @@ Let's look at a typical imperative, impure, object-oriented approach of transfor
   {
     "firstName": "Mary",
     "lastName": "Jane",
-    "pay": [
+    "payments": [
       12083.33,
       12083.33,
       12083.33,
@@ -51,7 +51,8 @@ Let's look at a typical imperative, impure, object-oriented approach of transfor
   }
 ]
 ```
-We'd like the resultant CSV file to look like this:
+We'd like to transform this data to a CSV file like this, where the total salary column is the sum of the monthly
+payments:
 
 | Last Name  | First Name | Total Salary
 | ---------- | -----------| ------------
@@ -59,21 +60,43 @@ We'd like the resultant CSV file to look like this:
 | Jane       | Mary       | 151928.21
 
 
-```js
-const fs = require("fs");
+Here's a typical impure, procedural, object-oriented approach. Granted in real-life we'd probably use a CSV parsing library,
+but you get the drift:
 
-function addData(path) {
-  let ret = 0;
-  const data = fs.readFileSync(path, { encoding: "utf8" });
-  const lines = data.split("\n");
-  for (let i = 0; i < lines.length; i++) {;
-    const cols = lines[i].split(",");
-    for (let j = 0; j < cols.length; j++) {
-      ret += parseInt(cols[j]);
-    }
+```js
+class SalaryManager {
+  constructor(path) {
+    // Ignore possible errors.
+    this.data = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
   }
-  return ret;
+  report() {
+    // The first row of the return array are the headers
+    let ret = [["Last Name", "First Name", "Total Salary"]];
+    
+    // For each employee...
+    for (let i = 0; i < this.data.length; i++) {
+      const employee = this.data[i];
+      
+      // Sum the yearly payments
+      let employeeTotal = 0;
+      for (let j = 0; j < employee.pay.length; j++) {
+        employeeTotal += employee.pay[j];
+      }
+      
+      // Add a row with the employee's info, including total salary
+      let row = [employee.lastName, employee.firstName, employeeTotal];
+      ret.push(row);
+    }
+    return ret.join("\n");
+  }
 }
+```
+
+The class is used like this:
+
+```
+const salaryReporter = new SalaryManager(`${__dirname}/data.csv`);
+salaryReporter.report();
 ```
 
 This function is *not* pure because it performs side effects, namely reading data from the file-system. The function's return value isn't soley dependent on its parameters. What if the file specified by `path` isn't there, or the file doesn't have read permissions? What if someone changes the content in the file specified by `path`? Additionally, the function is imperative. It reads like point-by-point directions on how to get from a file path to a sum. And lastly, it mutates its local data. The return value `ret` is changed in-place inside the `for` loop.
