@@ -136,7 +136,7 @@ The `writeReport` method is *not* pure because it performs side effects, namely 
 
 There are a few other bothersome issues with this implementation:
 
-* It verbosely reads like a step-by-step recipe of how to get from the input to the output. It's easy to get lost in the trees.
+* It's overly verbose and reads like a step-by-step recipe of how to get from the input to the output.
 * It mutates the `ret` and `employeeTotal` variables. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
 * To test the class, we have to have file that exists with the JSON and we have to be sure to remove it before each test-run.
 
