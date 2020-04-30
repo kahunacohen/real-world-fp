@@ -94,7 +94,7 @@ class SalaryManager {
 
 The class is used like this:
 
-```
+```js
 const salaryReporter = new SalaryManager(`${__dirname}/data.csv`);
 salaryReporter.report();
 ```
