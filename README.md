@@ -9,7 +9,7 @@ Fp is a way to solve larger problems by fitting together small, focused, *pure* 
 
 First, what are *pure* functions? Pure functions are simply functions that given an input *x*, always return the same output *y*. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.). 
 
-Let's look at a typical imperative, impure approach of transforming JSON in this form:  
+Let's look at a typical imperative, impure, object-oriented approach of transforming an array of objects to a CSV file. The data might look like this in a JSON file. Each numeric element in the `pay` array represents a monthly pay amount for the year:
 
 ```
 [
@@ -51,23 +51,13 @@ Let's look at a typical imperative, impure approach of transforming JSON in this
   }
 ]
 ```
-to csv file in this form:
+We'd like the resultant CSV file to look like this:
 
-| Last Name  | First Name |
-| ---------- | -----------|
-| Doe        | John       |
-| Jane       | Mary       |
+| Last Name  | First Name | Total Salary
+| ---------- | -----------| ------------
+| Doe        | John       |  97234.76
+| Jane       | Mary       | 151928.21
 
-
-
-function that reads arbitrary numbers on each line from a CSV file and sums all the columns. The input file might look something like this:
-
-```
-1,2,3
-100,0,1
-1,1
-```
-Given this input, we expect the return value of the function to be `109` (`1 + 2 + 3 + 100 + 0 + 1 + 1 + 1`). Granted, in real life you'd use a CSV library, but bear with me...
 
 ```js
 const fs = require("fs");
