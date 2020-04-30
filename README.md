@@ -53,10 +53,10 @@ Let's look at a typical imperative, impure approach of transforming JSON in this
 ```
 to csv file in this form:
 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| Last Name  | First Name |
+| ---------- | -----------|
+| Doe        | John       |
+| Jane       | Mary       |
 
 
 
