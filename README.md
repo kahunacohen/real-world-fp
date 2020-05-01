@@ -127,6 +127,8 @@ describe("Salary Manager", () => {
 });
 ```
 
+Now let's imagine that in addition to a CSV file, we are asked to generate an HTML report...
+
 The `writeReport` method is *not* pure because it performs side effects, namely reading and writing data from the file-system. Further, the method's return value isn't soley dependent on its parameters. What if:
 
 * `inPath` doesn't exist?
