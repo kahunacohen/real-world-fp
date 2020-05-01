@@ -3,13 +3,13 @@
 This post is aimed for intermediate JavaScript programmers, and/or those with very limited functional programming experience. I'll discuss what functional programming (fp) is, why to use it and how to integrate it into a real-world, existing project written mainly in a procedural and/or object-oriented style.
 
 ## What is Functional Programming?
-With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/) fp is getting a lot of attention in the JavaScript community. But what is it and how can our programs benefit from it? Though fp has a reputation for being too academic, its principles are really quite basic and it's had a huge affect on modern programming practices.
+With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/) fp is getting a lot of attention in the JavaScript community. But what is it and how can our programs benefit from it? Though fp has a reputation for being too academic, its principles are really quite basic and it's had a huge affect on modern programming.
 
 Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring immutable data structures over side-effects, stateful objects and mutable data. A program written in an fp style tends to read more like a spec rather than a step-by-step recipe.  
 
 First, what are *pure* functions? Pure functions are simply functions that given an input *x*, always return the same output *y*. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.). 
 
-Let's take a look at a practical programming task that will help us understand the difference betweeen procedural and functional programming. Imagine data in a JSON file in this form:
+Let's take a look at a practical programming task that will help us understand the difference betweeen procedural and functional programming. Imagine data in a JSON file representing salary information for two employees:
 
 ```
 [
@@ -61,7 +61,7 @@ payments:
 
 
 Here's a typical impure, procedural, object-oriented approach. Granted in real-life we'd probably use a CSV parsing library,
-but you get the drift:
+but you get the drift. For now the class just writes a CSV file, but imagine it could do other things, including working with internal state:
 
 ```js
 class SalaryManager {
