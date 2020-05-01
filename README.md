@@ -140,7 +140,7 @@ There are a few other bothersome issues with this implementation:
 * It mutates the `ret` and `employeeTotal` variables. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
 * To test the class, we have to have a file that exists with the JSON and we have to be sure to remove it before each test-run.
 
-So, how do we make `addRows` more "functional"? Let's start with *walling off* the state, which in this case is the state of the file on the file system. Let's relegate the side effect of reading the file to our function's caller and focus just on parsing the CSV text. Let's also get rid of manually managing a for loop, and while we're at it, let's get rid of the mutable data:
+So, how can we address these deficiencies? Let's start with *walling off* the state, which in this case is the state of the file on the file system. Let's relegate the side effect of reading the file to our function's caller and focus just on parsing the CSV text. We can also do away with the class construct and just use module level functions. Let's also get rid of manually managing a for loop, and while we're at it, let's get rid of the mutable data:
 
 ```js
 const addData = s =>
