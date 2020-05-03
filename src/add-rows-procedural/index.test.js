@@ -1,12 +1,12 @@
 const fs = require("fs");
 
-class SalaryManager {
+class SalaryReporter {
   constructor(inPath, outPath) {
     // Ignore possible errors.
     this.data = JSON.parse(fs.readFileSync(inPath, { encoding: "utf-8" }));
     this.outPath = outPath;
   }
-  writeReport() {
+  write() {
     // The first row of the return array are the headers
 
     let ret = [["Last Name", "First Name"]];
@@ -29,7 +29,7 @@ class SalaryManager {
   }
 }
 
-describe("Salary Manager", () => {
+describe("Salary Reporter", () => {
   const outPath = `${__dirname}/report.csv`;
   const safeDelete = () => {
     if (fs.existsSync(outPath)) {
@@ -42,12 +42,12 @@ describe("Salary Manager", () => {
   afterEach(() => {
     safeDelete();
   });
-  it("writeReport writes a correct CSV file", () => {
-    const salaryReporter = new SalaryManager(
+  it("writes a correct CSV file", () => {
+    const salaryReporter = new SalaryReporter(
       `${__dirname}/employees.json`,
       outPath
     );
-    salaryReporter.writeReport();
+    salaryReporter.write();
     expect(fs.readFileSync(outPath, { encoding: "utf-8" })).toEqual(
       "Last Name,First Name\nDoe,John,97234.76\nJane,Mary,151928.21"
     );
