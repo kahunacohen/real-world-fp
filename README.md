@@ -66,7 +66,7 @@ Here's a typical impure, procedural, object-oriented approach. Granted in real-l
 but you get the drift. For now the class just writes a CSV file, but imagine while we evolve this code it does other things, including reading and writing internal state:
 
 ```js
-class SalaryManager {
+class SalaryReporter {
   constructor(inPath, outPath) {
     // Ignore possible errors.
     this.data = JSON.parse(fs.readFileSync(inPath, { encoding: "utf-8" }));
@@ -117,7 +117,7 @@ describe("Salary Manager", () => {
   });
   
   it("writeReport writes a correct CSV file", () => {
-    const salaryReporter = new SalaryManager(
+    const salaryReporter = new SalaryReporter(
       `${__dirname}/employees.json`,
       outPath
     );
@@ -129,7 +129,7 @@ describe("Salary Manager", () => {
 });
 ```
 
-Now let's imagine that in addition to a CSV file, we are asked to generate an HTML report.
+Now let's imagine that in addition to a CSV file, we are asked to generate an HTML report. One approach might be to subclass
 
 The `writeReport` method is *not* pure because it performs side effects, namely reading and writing data from the file-system. Further, the method's return value isn't soley dependent on its parameters. What if:
 
