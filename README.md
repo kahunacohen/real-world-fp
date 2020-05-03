@@ -132,16 +132,18 @@ describe("Salary Reporter", () => {
 Now let's imagine that in addition to a CSV file, we are asked to generate an HTML report. One approach might be to create a hierarchy of SalaryReporter classes. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter:
 
 ```js
+const fs = require("fs");
+
 class SalaryReporter {
   constructor(inPath) {
     this.data = JSON.parse(fs.readFileSync(inPath, { encoding: "utf-8" }));
-
-    // Init with just header row.
-    this.parsedData = [["Last Name", "First Name"]];
+    this.parsedData = [];
+    this.parse();
   }
   parse() {
     // Only parse data if we haven't parsed it yet.
-    if (this.parsedData.length === 1) {
+    if (this.parsedData.length === 0) {
+      this.parsedData = [["Last Name", "First Name"]];
       for (let i = 0; i < this.data.length; i++) {
         const employee = this.data[i];
         let employeeTotal = 0;
@@ -162,9 +164,9 @@ as internal state (`this.parsedData`) and returns an instance of SalaryReporter.
 
 ```js
 describe("SalaryReporter", () => {
-  it("parse returns correct 2 dim array", () => {
+  it("parses correct 2 dim array", () => {
     const salaryReporter = new SalaryReporter(`${__dirname}/employees.json`);
-    expect(salaryReporter.parse().parsedData).toEqual([
+    expect(salaryReporter.parsedData).toEqual([
       ["Last Name", "First Name"],
       ["Doe", "John", 97234.76],
       ["Jane", "Mary", 151928.21],
