@@ -129,7 +129,51 @@ describe("Salary Reporter", () => {
 });
 ```
 
-Now let's imagine that in addition to a CSV file, we are asked to generate an HTML report. One approach might be to subclass
+Now let's imagine that in addition to a CSV file, we are asked to generate an HTML report. One approach might be to create a hierarchy of SalaryReporter classes. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter:
+
+```js
+class SalaryReporter {
+  constructor(inPath) {
+    this.data = JSON.parse(fs.readFileSync(inPath, { encoding: "utf-8" }));
+
+    // Init with just header row.
+    this.parsedData = [["Last Name", "First Name"]];
+  }
+  parse() {
+    // Only parse data if we haven't parsed it yet.
+    if (this.parsedData.length === 1) {
+      for (let i = 0; i < this.data.length; i++) {
+        const employee = this.data[i];
+        let employeeTotal = 0;
+        for (let j = 0; j < employee.pay.length; j++) {
+          employeeTotal += employee.pay[j];
+        }
+        let row = [employee.lastName, employee.firstName, employeeTotal];
+        this.parsedData.push(row);
+      }
+    }
+    return this;
+  }
+}
+```
+
+We've taken out the `write` method and added a `parse` method that's generally useful. `parse` saves the parsed data structure
+as internal state (`this.parsedData`) and returns an instance of SalaryReporter. We could test it like this:
+
+```js
+describe("SalaryReporter", () => {
+  it("parse returns correct 2 dim array", () => {
+    const salaryReporter = new SalaryReporter(`${__dirname}/employees.json`);
+    expect(salaryReporter.parse().parsedData).toEqual([
+      ["Last Name", "First Name"],
+      ["Doe", "John", 97234.76],
+      ["Jane", "Mary", 151928.21],
+    ]);
+  });
+});
+```
+
+`SalaryReporter`
 
 The `writeReport` method is *not* pure because it performs side effects, namely reading and writing data from the file-system. Further, the method's return value isn't soley dependent on its parameters. What if:
 
