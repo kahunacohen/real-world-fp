@@ -2,12 +2,14 @@
 
 This post is aimed for intermediate JavaScript programmers, and/or those with very limited functional programming experience. I'll discuss what functional programming (fp) is, why to use it and how to integrate it into a real-world, existing project written mainly in a procedural and/or object-oriented style.
 
+We'll examine how a feature is typically developed using a procedural, object-oriented approach vs. a more functional approach. I'll use an example, that while somewhat forced, exemplifies the main principles of functional programming.
+
 ## What is Functional Programming?
-With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/) fp is getting a lot of attention in the JavaScript community. But what is it and how can our programs benefit from it? Though fp has a reputation for being too academic, its principles are really quite basic and it's had a huge affect on modern programming.
+With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/) fp is has gotten lot of attention in the JavaScript community. But what is it and how can our programs benefit from it? Though fp has a reputation for being academic, it's main prinicples are simple.
 
-Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring immutable data structures over side-effects, stateful objects and mutable data. A program written in an fp style tends to read more like a spec rather than a step-by-step recipe.  
+Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring immutable data structures over side-effects, stateful objects and mutable data. Functional solutions also tend to be more declarative rather than imperative. They read like a spec, rather than a list of instructions.
 
-First, what are *pure* functions? Pure functions are simply functions that given an input *x*, always return the same output *y*. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.). 
+First, what are *pure* functions? Pure functions are functions that given an input *x*, always return the same output *y*. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.). 
 
 Let's take a look at a practical programming task that will help us understand the difference betweeen procedural and functional programming. Imagine data in a JSON file representing salary information for two employees:
 
@@ -51,8 +53,8 @@ Let's take a look at a practical programming task that will help us understand t
   }
 ]
 ```
-We'd like to transform this data to a CSV file like this, where the total salary column is the sum of the monthly
-payments:
+We'd like to transform this data to a CSV file, where the total salary column is the sum of the monthly
+payments. E.g.:
 
 | Last Name  | First Name | Total Salary
 | ---------- | -----------| ------------
@@ -61,7 +63,7 @@ payments:
 
 
 Here's a typical impure, procedural, object-oriented approach. Granted in real-life we'd probably use a CSV parsing library,
-but you get the drift. For now the class just writes a CSV file, but imagine it could do other things, including working with internal state:
+but you get the drift. For now the class just writes a CSV file, but imagine while we evolve this code it does other things, including reading and writing internal state:
 
 ```js
 class SalaryManager {
@@ -127,7 +129,7 @@ describe("Salary Manager", () => {
 });
 ```
 
-Now let's imagine that in addition to a CSV file, we are asked to generate an HTML report...
+Now let's imagine that in addition to a CSV file, we are asked to generate an HTML report.
 
 The `writeReport` method is *not* pure because it performs side effects, namely reading and writing data from the file-system. Further, the method's return value isn't soley dependent on its parameters. What if:
 
