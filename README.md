@@ -72,7 +72,7 @@ class SalaryReporter {
     this.data = JSON.parse(fs.readFileSync(inPath, { encoding: "utf-8" }));
     this.outPath = outPath;
   }
-  writeReport() {
+  write() {
     // The first row of the return array are the headers
 
     let ret = [["Last Name", "First Name"]];
@@ -99,7 +99,7 @@ class SalaryReporter {
 We could test the class like this:
 
 ```js
-describe("Salary Manager", () => {
+describe("Salary Reporter", () => {
 
   // Ensure the report file is removed before and after
   // the test.
@@ -116,7 +116,7 @@ describe("Salary Manager", () => {
     safeDelete();
   });
   
-  it("writeReport writes a correct CSV file", () => {
+  it("writes a correct CSV file", () => {
     const salaryReporter = new SalaryReporter(
       `${__dirname}/employees.json`,
       outPath
