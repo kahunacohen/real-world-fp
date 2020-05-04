@@ -66,6 +66,8 @@ Here's a typical impure, procedural, object-oriented approach. Granted in real-l
 but you get the drift. For now the class just writes a CSV file, but imagine while we evolve this code it does other things, including reading and writing internal state:
 
 ```js
+const fs = require("fs");
+
 class SalaryReporter {
   constructor(inPath, outPath) {
     // Ignore possible errors.
@@ -99,11 +101,11 @@ class SalaryReporter {
 We could test the class like this:
 
 ```js
-describe("Salary Reporter", () => {
+const fs = require("fs");
 
-  // Ensure the report file is removed before and after
-  // the test.
-  const outPath = `${__dirname}/report.csv`;
+
+describe("Salary Reporter", () => {
+  const outPath = `${__dirname}/employees.csv`;
   const safeDelete = () => {
     if (fs.existsSync(outPath)) {
       fs.unlinkSync(outPath);
@@ -115,7 +117,6 @@ describe("Salary Reporter", () => {
   afterEach(() => {
     safeDelete();
   });
-  
   it("writes a correct CSV file", () => {
     const salaryReporter = new SalaryReporter(
       `${__dirname}/employees.json`,
@@ -175,8 +176,47 @@ describe("SalaryReporter", () => {
 });
 ```
 
-Now, let's subclass this base class to write a CSV report:
+Now, let's subclass this base class to write a CSV report. The subclass cares only about it's specialization, writing
+a CSV representation of the data:
 
+```js
+class SalaryCSVReporter extends SalaryReporter {
+  write(outPath) {
+    fs.writeFileSync(outPath, this.parsedData.join("\n"), {
+      encoding: "utf-8",
+    });
+  }
+}
+```
+
+...and it's test:
+
+```js
+describe("SalaryCSVReporter", () => {
+  const outPath = `${__dirname}/employees.csv`;
+  const safeDelete = () => {
+    if (fs.existsSync(outPath)) {
+      fs.unlinkSync(outPath);
+    }
+  };
+  beforeEach(() => {
+    safeDelete();
+  });
+  afterEach(() => {
+    safeDelete();
+  });
+  it("writes a CSV file", () => {
+    const salaryCSVReporter = new SalaryCSVReporter(
+      `${__dirname}/employees.json`
+    );
+    salaryCSVReporter.write(outPath);
+    expect(true).toEqual(true);
+    expect(fs.readFileSync(outPath, { encoding: "utf-8" })).toEqual(
+      "Last Name,First Name\nDoe,John,97234.76\nJane,Mary,151928.21"
+    );
+  });
+});
+```
 
 The `writeReport` method is *not* pure because it performs side effects, namely reading and writing data from the file-system. Further, the method's return value isn't soley dependent on its parameters. What if:
 
