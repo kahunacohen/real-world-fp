@@ -175,8 +175,7 @@ describe("SalaryReporter", () => {
 });
 ```
 
-Now, let's subclass this to report using a CSV file:
-
+Now, let's subclass this base class to write a CSV report:
 
 
 The `writeReport` method is *not* pure because it performs side effects, namely reading and writing data from the file-system. Further, the method's return value isn't soley dependent on its parameters. What if:
