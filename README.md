@@ -130,7 +130,7 @@ describe("Salary Reporter", () => {
 });
 ```
 
-Now let's imagine that in addition to a CSV file, we are asked to generate an HTML report. One approach might be to create a hierarchy of SalaryReporter classes. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter:
+Now imagine that in addition to a CSV file, we are asked to generate an HTML report. One approach might be to create a hierarchy of SalaryReporter classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter:
 
 ```js
 const fs = require("fs");
