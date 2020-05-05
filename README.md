@@ -180,6 +180,7 @@ Now, let's subclass this base class to write a CSV report. The subclass cares on
 a CSV representation of the data:
 
 ```js
+...
 class SalaryCSVReporter extends SalaryReporter {
   write(outPath) {
     fs.writeFileSync(outPath, this.parsedData.join("\n"), {
@@ -192,6 +193,7 @@ class SalaryCSVReporter extends SalaryReporter {
 ...and it's test:
 
 ```js
+...
 describe("SalaryCSVReporter", () => {
   const outPath = `${__dirname}/employees.csv`;
   const safeDelete = () => {
@@ -221,6 +223,7 @@ describe("SalaryCSVReporter", () => {
 Now the HTML reporter:
 
 ```js
+...
 class SalaryReporterHTMLReporter extends SalaryReporter {
   write(outPath) {
     const date = new Date();
@@ -259,6 +262,10 @@ class SalaryReporterHTMLReporter extends SalaryReporter {
 Here's its test:
 
 ```js
+...
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
 describe("SalaryHTMLReporter", () => {
   const outPath = `${__dirname}/employees.html`;
   const safeDelete = () => {
