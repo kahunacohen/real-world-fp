@@ -13,7 +13,7 @@ First, what are *pure* functions? Pure functions are functions that given an inp
 
 Let's take a look at a practical programming task that will help us understand the difference betweeen procedural and functional programming. Imagine data in a JSON file representing salary information for two employees:
 
-```
+```json
 [
   {
     "firstName": "John",
