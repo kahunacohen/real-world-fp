@@ -319,17 +319,6 @@ Let's code review this implementation:
 * It's verbose and reads like a step-by-step recipe of how to get from the input to the output. Generally the more verbose code is the more likely we've introduced buts, and it's easy to "get lost in the trees."
 * It mutates variables including `employeeTotal` and `this.parsedData` in the base class' `parse` method. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
 
-So, how can we address these deficiencies? Let's start with *walling off* the state, which in this case is the state of the file on the file system. Let's relegate the side effect of reading the file to our function's caller and focus just on parsing the CSV text. We can also do away with the class construct and just use module level functions. Let's also get rid of manually managing a for loop, and while we're at it, let's get rid of the mutable data:
+## A Functional Implementation
 
-```js
-const addData = s =>
-  s.split("\n").reduce((acc, line) => {
-    const [x, y] = line.split(",");
-    return acc + (parseInt(x) + parseInt(y));
-  }, 0);
-```
-
-[Here](src/add-rows-functional/index.test.js) we pass the CSV text as a string to the function and [reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) the string to the end-data, which in our case is the sum of each line. JavaScript's `reduce` function takes a callback function which in-turn takes an accumulator and the current value and *reduces* the array to one value. 
-
-Functions like `reduce`, `forEach`, `map`, `filter` etc. are called
-*higher order functions* (or HOFs), because they take functions as parameters. They are crucial in a functional programmer's toolbox, because they help avoid manual state management and are general enough to be useful regardless of the input's type. 
+## Challenges of Integrating into Existing Code Bases
