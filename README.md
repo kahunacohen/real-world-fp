@@ -315,7 +315,7 @@ Let's code review this implementation:
   * In general, the solution is monolihic and mixes concerns between data and how the data is output.
   * To test the class, we have to read an input file, we have to read an output file, and we have to be sure to remove the output file before and after each test-run.
   * What if the content of `inPath` is changed by a person or process? Can we run concurrent tests?
-* It's verbose, and reads like a step-by-step recipe of how to get from the input to the output. It's easy to "get lost in the trees."
+* It's verbose and reads like a step-by-step recipe of how to get from the input to the output. Generally the more verbose code is the more likely we've introduced buts, and it's easy to "get lost in the trees."
 * It mutates variables including `employeeTotal` and `this.parsedData` in the base class' `parse` method. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
 
 So, how can we address these deficiencies? Let's start with *walling off* the state, which in this case is the state of the file on the file system. Let's relegate the side effect of reading the file to our function's caller and focus just on parsing the CSV text. We can also do away with the class construct and just use module level functions. Let's also get rid of manually managing a for loop, and while we're at it, let's get rid of the mutable data:
