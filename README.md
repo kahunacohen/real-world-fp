@@ -217,7 +217,7 @@ describe("SalaryCSVReporter", () => {
 });
 ```
 
-Now the HTML reporter:
+Now the HTML reporter. We'll override the `write` method to generate an HTML file containing a table:
 
 ```js
 ...
