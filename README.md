@@ -11,6 +11,7 @@ Fp is a way to solve larger problems by fitting together small, focused, *pure* 
 
 What does all this mean and why do we care? To make this more concrete, we'll implement a programming task in a typical object-oriented, procedural style, then transform it to a functional style.
 
+## A Procedural Implementation
 Ready? Let's go. Imagine data in a JSON file representing salary information for employees over a year:
 
 ```json
