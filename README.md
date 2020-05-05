@@ -9,9 +9,9 @@ With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [R
 
 Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring immutable data structures over side-effects, stateful objects and mutable data. Functional solutions also tend to be more declarative rather than imperative. They read like a spec, rather than a list of instructions.
 
-First, what are *pure* functions? Pure functions are functions that given an input *x*, always return the same output *y*. Additionally, a pure function performs no side-effects (such as writing to the screen, writing or reading a file, opening a network connection etc.). 
+What does all this mean and why do we care? To make this more concrete, we'll implement a programming task in a typical object-oriented, procedural style, then transform it to a functional style.
 
-Let's take a look at a practical programming task that will help us understand the difference betweeen procedural and functional programming. Imagine data in a JSON file representing salary information for two employees:
+Ready? Let's go. Imagine data in a JSON file representing salary information for two employees:
 
 ```json
 [
