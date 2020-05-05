@@ -64,7 +64,6 @@ describe("SalaryCSVReporter", () => {
       `${__dirname}/employees.json`
     );
     salaryCSVReporter.write(outPath);
-    expect(true).toEqual(true);
     expect(fs.readFileSync(outPath, { encoding: "utf-8" })).toEqual(
       "Last Name,First Name,Total\nDoe,John,97234.76\nJane,Mary,151928.21"
     );
