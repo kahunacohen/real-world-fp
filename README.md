@@ -2,10 +2,10 @@
 
 This post is aimed for intermediate JavaScript programmers, and/or those with very limited functional programming experience. I'll discuss what functional programming (fp) is, why to use it and how to integrate it into a real-world, existing code written in a procedural and/or object-oriented style.
 
-We'll examine how a feature is typically developed using a procedural, object-oriented approach vs. a more functional approach. I'll use an example, that while somewhat forced, exemplifies the main principles of functional programming.
+We'll examine how a feature is typically developed using a procedural, object-oriented approach vs. a more functional approach. I'll use an example, that while somewhat forced, examplifies the main principles of functional programming.
 
 ## What is Functional Programming?
-With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/) fp is has gotten lot of attention in the JavaScript community. But what is it and how can our programs benefit from it? Though fp has a reputation for being academic, it's main prinicples are simple to grasp and direct address recurrent challenges of programming in more traditional styles.
+With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/) fp is has gotten lot of attention in the JavaScript community. But what is it and how can our programs benefit from it? Though fp has a reputation for being academic, it's main prinicples are simple to grasp and directly remediate recurrent challenges when programming in more traditional styles.
 
 Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring immutable data structures over side-effects, stateful objects and mutable data. Functional solutions also tend to be more declarative rather than imperative. They read like a spec, rather than a list of instructions.
 
