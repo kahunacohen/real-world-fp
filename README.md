@@ -61,7 +61,6 @@ payments. E.g.:
 | Doe        | John       |  97234.76
 | Jane       | Mary       | 151928.21
 
-
 Here's a typical impure, procedural, object-oriented approach. Granted in real-life we'd probably use a CSV parsing library,
 but you get the drift. For now the class just writes a CSV file, but imagine while we evolve this code it does other things, including reading and writing internal state:
 
