@@ -221,8 +221,85 @@ describe("SalaryCSVReporter", () => {
 Now the HTML reporter:
 
 ```js
+class SalaryReporterHTMLReporter extends SalaryReporter {
+  write(outPath) {
+    const date = new Date();
+    const headerRow =
+      "<tr>" +
+      this.parsedData[0].map((heading) => `<th>${heading}</th>`).join("") +
+      "</tr>";
+    const dataRows = this.parsedData
+      .slice(1)
+      .map((row) => {
+        const cells = row.map((data) => `<td>${data}</td>`).join("");
+        return `<tr>${cells}</tr>`;
+      })
+      .join("");
 
+    const html = `<html>
+    <head>
+      <title>Employee Report: ${date}</title>
+    </head>
+    <body>
+      <table>
+        <thead>
+          ${headerRow}
+        </thead>
+        <tbody>
+          ${dataRows}
+        </tbody>
+      </table>
+    </body>
+  </html>`;
+    fs.writeFileSync(outPath, html, { encoding: "utf-8" });
+  }
+}
 ```
+
+Here's its test:
+
+```js
+describe("SalaryHTMLReporter", () => {
+  const outPath = `${__dirname}/employees.html`;
+  const safeDelete = () => {
+    if (fs.existsSync(outPath)) {
+      fs.unlinkSync(outPath);
+    }
+  };
+  beforeEach(() => {
+    safeDelete();
+  });
+  afterEach(() => {
+    safeDelete();
+  });
+  it("writes an HTML report", () => {
+    const htmlReporter = new SalaryReporterHTMLReporter(
+      `${__dirname}/employees.json`
+    );
+    htmlReporter.write(outPath);
+    const html = fs.readFileSync(outPath, { encoding: "utf8" });
+    const doc = new JSDOM(html).window.document;
+    const headers = Array.from(doc.querySelectorAll("table thead th"));
+    const dataCells = Array.from(doc.querySelectorAll("table tbody td"));
+    expect(headers.length).toEqual(3);
+    expect(headers.map((header) => header.textContent)).toEqual([
+      "Last Name",
+      "First Name",
+      "Total",
+    ]);
+
+    expect(dataCells.map((cell) => cell.textContent)).toEqual([
+      "Doe",
+      "John",
+      "97234.76",
+      "Jane",
+      "Mary",
+      "151928.21",
+    ]);
+  });
+});
+```
+
 
 The `writeReport` method is *not* pure because it performs side effects, namely reading and writing data from the file-system. Further, the method's return value isn't soley dependent on its parameters. What if:
 
