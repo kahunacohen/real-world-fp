@@ -308,7 +308,7 @@ describe("SalaryHTMLReporter", () => {
 
 Let's code review this implementation:
 
-* The `write` methods perform side effects, namely reading and writing data from the file-system. They are *impure*, meaning the output of the `write` methods don't depend soley on their path inputs:
+* The `write` methods perform side effects, namely reading and writing data from the file-system. They are *impure*, meaning the outputs of the `write` methods don't depend soley on their path inputs:
   * What if the file at inPath` doesn't exist?
   * What if the file at `inPath` doesn't have read permissions?
   * What if the caller doesn't have write permissions for `outPath`?
