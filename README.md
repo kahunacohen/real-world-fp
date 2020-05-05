@@ -1,6 +1,6 @@
-# Real World Functional Programming
+# Functional Programmers for Novices
 
-This post is aimed for intermediate JavaScript programmers, and/or those with very limited functional programming experience. I'll discuss what functional programming (fp) is, why to use it and how to integrate it into a real-world, existing project written mainly in a procedural and/or object-oriented style.
+This post is aimed for intermediate JavaScript programmers, and/or those with very limited functional programming experience. I'll discuss what functional programming (fp) is, why to use it and how to integrate it into a real-world, existing code written in a procedural and/or object-oriented style.
 
 We'll examine how a feature is typically developed using a procedural, object-oriented approach vs. a more functional approach. I'll use an example, that while somewhat forced, exemplifies the main principles of functional programming.
 
@@ -306,19 +306,17 @@ describe("SalaryHTMLReporter", () => {
 });
 ```
 
+Let's code review this implementation:
 
-The `writeReport` method is *not* pure because it performs side effects, namely reading and writing data from the file-system. Further, the method's return value isn't soley dependent on its parameters. What if:
-
-* `inPath` doesn't exist?
-* `inPath` doesn't have read permissions?
-* The content of `inPath` is changed by a person or process?
-* The caller doesn't have write permissions for `outPath`?
-
-There are a few other bothersome issues with this implementation:
-
-* It's overly verbose and reads like a step-by-step recipe of how to get from the input to the output.
-* It mutates the `ret` and `employeeTotal` variables. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
-* To test the class, we have to have a file that exists with the JSON and we have to be sure to remove it before each test-run.
+* The `write` methods perform side effects, namely reading and writing data from the file-system. They are *impure*. What if: 
+  * What if `inPath` doesn't exist?
+  * What if `inPath` doesn't have read permissions?
+  * The caller doesn't have write permissions for `outPath`?
+  * In general, the solution is monolihic and mixes concerns between data and how the data is output.
+  * To test the class, we have to read an input file, we have to read an output file, and we have to be sure to remove the output file before and after each test-run.
+  * What if the content of `inPath` is changed by a person or process? Can we run concurrent tests?
+* It's verbose, and reads like a step-by-step recipe of how to get from the input to the output. It's easy to "get lost in the trees."
+* It mutates variables including `employeeTotal` and `this.parsedData` in the base class' `parse` method. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
 
 So, how can we address these deficiencies? Let's start with *walling off* the state, which in this case is the state of the file on the file system. Let's relegate the side effect of reading the file to our function's caller and focus just on parsing the CSV text. We can also do away with the class construct and just use module level functions. Let's also get rid of manually managing a for loop, and while we're at it, let's get rid of the mutable data:
 
