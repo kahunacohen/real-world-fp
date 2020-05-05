@@ -308,10 +308,10 @@ describe("SalaryHTMLReporter", () => {
 
 Let's code review this implementation:
 
-* The `write` methods perform side effects, namely reading and writing data from the file-system. They are *impure*. What if: 
-  * What if `inPath` doesn't exist?
-  * What if `inPath` doesn't have read permissions?
-  * The caller doesn't have write permissions for `outPath`?
+* The `write` methods perform side effects, namely reading and writing data from the file-system. They are *impure*, meaning the output of the `write` methods don't depend soley on their path inputs:
+  * What if the file at inPath` doesn't exist?
+  * What if the file at `inPath` doesn't have read permissions?
+  * What if the caller doesn't have write permissions for `outPath`?
   * In general, the solution is monolihic and mixes concerns between data and how the data is output.
   * To test the class, we have to read an input file, we have to read an output file, and we have to be sure to remove the output file before and after each test-run.
   * What if the content of `inPath` is changed by a person or process? Can we run concurrent tests?
