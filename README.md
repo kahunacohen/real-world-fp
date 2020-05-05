@@ -1,13 +1,13 @@
 # Functional Programming for Smarties
 
-This post is aimed for intermediate JavaScript programmers, and/or those with very limited functional programming experience. I'll discuss what functional programming (fp) is, why to use it and how to integrate it into real-world, existing code written in a procedural and/or object-oriented style.
+This post is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. I'll discuss what functional programming (fp) is, why to use it and how to integrate it into a real-world code base.
 
 ## What is Functional Programming?
-With the popularity of frameworks such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/), fp is has gotten lot of attention in the JavaScript community. But what is it and how can our programs benefit from it? Though fp has a reputation for being academic, it's main prinicples are simple to grasp and directly remediate recurrent challenges when programming in more traditional styles.
+With the popularity of frameworks and libraries, such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/), fp is has gotten lot of attention in the JavaScript community. But what is it and how can our programs benefit from it? Though fp has a reputation for being academic, it's main prinicples are simple to grasp and directly address common challenges when programming in a more procedural style.
 
-Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring immutable data structures over side-effects, stateful objects and mutable data. Functional solutions also tend to be more declarative rather than imperative. They read like a spec, rather than a list of instructions.
+Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring immutable data structures over side-effects, stateful objects and mutable data. Functional solutions also tend to be more declarative rather than imperative. Functional programs read more like a spec than a list of instructions to the computer.
 
-What does all this mean and why do we care? To make this more concrete, we'll implement a programming task in a typical object-oriented, procedural style, then transform it to a functional style.
+To make this more concrete, we'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style.
 
 ## A Procedural Implementation
 Ready? Let's go. Imagine data in a JSON file representing salary information for employees over a year:
@@ -60,8 +60,8 @@ payments. E.g.:
 | Doe        | John       |  97234.76
 | Jane       | Mary       | 151928.21
 
-Here's a typical impure, procedural, object-oriented approach. Granted in real-life we'd probably use a CSV parsing library,
-but you get the drift. For now the class just writes a CSV file, but imagine while we evolve this code it does other things, including reading and writing internal state:
+Here's a typical approach. Granted in real-life we'd probably use a CSV parsing library,
+but you get the drift. We'll write a class with a `write` method that creates the CSV file given a path to the JSON data:
 
 ```js
 const fs = require("fs");
@@ -96,7 +96,7 @@ class SalaryReporter {
 }
 ```
 
-We could test the class like this:
+We'll test the class like this:
 
 ```js
 const fs = require("fs");
@@ -128,7 +128,7 @@ describe("Salary Reporter", () => {
 });
 ```
 
-Now imagine that in addition to a CSV file, we are asked to generate an HTML report. One approach might be to create a hierarchy of SalaryReporter classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter:
+Now imagine that, in addition to a CSV file, we are asked to generate an HTML report. One approach might be to create a hierarchy of SalaryReporter classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter:
 
 ```js
 const fs = require("fs");
@@ -159,7 +159,7 @@ class SalaryReporter {
 ```
 
 We've taken out the `write` method and added a `parse` method that's generally useful. `parse` saves the parsed data structure
-as internal state (`this.parsedData`) and returns an instance of SalaryReporter. We could test it like this:
+as internal state (`this.parsedData`) and returns an instance of `SalaryReporter`. We could test it like this:
 
 ```js
 describe("SalaryReporter", () => {
@@ -174,7 +174,7 @@ describe("SalaryReporter", () => {
 });
 ```
 
-Now, let's subclass this base class to write a CSV report. The subclass cares only about it's specialization, writing
+Now, let's extend this base class to write a CSV report. The subclass cares only about it's specialization, writing
 a CSV representation of the data:
 
 ```js
@@ -217,7 +217,7 @@ describe("SalaryCSVReporter", () => {
 });
 ```
 
-Now the HTML reporter. We'll override the `write` method to generate an HTML file containing a table:
+Now the HTML reporter. We'll, again, subclass `SalaryReporter`, overriding the `write` method to generate an HTML file containing a table:
 
 ```js
 ...
@@ -308,16 +308,16 @@ describe("SalaryHTMLReporter", () => {
 });
 ```
 
-Let's code review this implementation:
+Let's code-review this approach. A few observations:
 
-* The `write` methods perform side effects, namely reading and writing data from the file-system. They are *impure*, meaning the outputs of the `write` methods don't depend soley on their path inputs:
+* The `write` methods perform side effects, namely reading and writing data from the file-system. The methods are *impure*, meaning the outputs of the `write` methods depend on state apart from their local state, and their output is not guarenteed to be the same given the same input:
   * What if the file at inPath` doesn't exist?
   * What if the file at `inPath` doesn't have read permissions?
   * What if the caller doesn't have write permissions for `outPath`?
   * In general, the solution is monolihic and mixes concerns between data and how the data is output.
   * To test the class, we have to read an input file, we have to read an output file, and we have to be sure to remove the output file before and after each test-run.
-  * What if the content of `inPath` is changed by a person or process? Can we run concurrent tests?
-* It's verbose and reads like a step-by-step recipe of how to get from the input to the output. Generally the more verbose code is the more likely we've introduced buts, and it's easy to "get lost in the trees."
+  * What if the content of `inPath` is changed by a person or process? Can we reliably execute the `write` methods concurrently?
+* It's verbose and reads like a step-by-step recipe of how to get from the input to the output. Generally the more verbose code is the more likely we've introduced bugs. It's a bit hard to read and easy to "get lost in the trees."
 * It mutates variables including `employeeTotal` and `this.parsedData` in the base class' `parse` method. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
 
 ## A Functional Implementation
