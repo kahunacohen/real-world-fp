@@ -282,9 +282,13 @@ describe("SalaryHTMLReporter", () => {
     );
     htmlReporter.write(outPath);
     const html = fs.readFileSync(outPath, { encoding: "utf8" });
+    
+    // Parse the HTML string from the file to a DOM so we can assert stuff.
     const doc = new JSDOM(html).window.document;
     const headers = Array.from(doc.querySelectorAll("table thead th"));
     const dataCells = Array.from(doc.querySelectorAll("table tbody td"));
+    
+    // Assert stuff.
     expect(headers.length).toEqual(3);
     expect(headers.map((header) => header.textContent)).toEqual([
       "Last Name",
