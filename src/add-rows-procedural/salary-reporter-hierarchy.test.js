@@ -1,5 +1,8 @@
 const fs = require("fs");
 
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
 class SalaryReporter {
   constructor(inPath) {
     this.data = JSON.parse(fs.readFileSync(inPath, { encoding: "utf-8" }));
@@ -120,5 +123,24 @@ describe("SalaryHTMLReporter", () => {
       `${__dirname}/employees.json`
     );
     htmlReporter.write(outPath);
+    const html = fs.readFileSync(outPath, { encoding: "utf8" });
+    const doc = new JSDOM(html).window.document;
+    const headers = Array.from(doc.querySelectorAll("table thead th"));
+    const dataCells = Array.from(doc.querySelectorAll("table tbody td"));
+    expect(headers.length).toEqual(3);
+    expect(headers.map((header) => header.textContent)).toEqual([
+      "Last Name",
+      "First Name",
+      "Total",
+    ]);
+
+    expect(dataCells.map((cell) => cell.textContent)).toEqual([
+      "Doe",
+      "John",
+      "97234.76",
+      "Jane",
+      "Mary",
+      "151928.21",
+    ]);
   });
 });
