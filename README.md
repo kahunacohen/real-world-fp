@@ -310,7 +310,7 @@ describe("SalaryHTMLReporter", () => {
 
 Let's code-review this approach. A few observations:
 
-* The `write` methods perform side effects, namely reading and writing data from the file-system. The methods are *impure*, meaning the outputs of the `write` methods depend on state apart from their local state, and their output is not guarenteed to be the same given the same input:
+* The `write` methods perform side effects, namely reading and writing data from the file-system. The methods are *impure*, meaning the outputs of the `write` methods depend on state apart from their local scope, and their output is not guarenteed to be the same given the same input:
   * What if the file at inPath` doesn't exist?
   * What if the file at `inPath` doesn't have read permissions?
   * What if the caller doesn't have write permissions for `outPath`?
