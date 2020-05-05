@@ -1,4 +1,4 @@
-# Functional Programming for Novices
+# Functional Programming for Smarties
 
 This post is aimed for intermediate JavaScript programmers, and/or those with very limited functional programming experience. I'll discuss what functional programming (fp) is, why to use it and how to integrate it into a real-world, existing code written in a procedural and/or object-oriented style.
 
