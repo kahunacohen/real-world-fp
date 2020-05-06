@@ -382,7 +382,7 @@ upper(exclaim("get out"));
 
 That doesn't look as nice as the unix toolset does. Instead we can use Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
 to make the data pipeline clearer. `compose` takes any number of functions, starting at the right and passes each one's output to the function
-to the right. It returns a new function that is a *composition* of its arguments:
+to the left. It returns a new function that is a *composition* of its arguments:
 
 ```js
 import { compose } from "ramda";
