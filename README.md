@@ -1,13 +1,19 @@
 # Functional Programming for Smarties
 
-This post is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. I'll discuss what functional programming (fp) is, why to use it and how to integrate it into a real-world code base.
+This post is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. I'll discuss the basics of functional programming (fp) is, why to use it and how to integrate it into a real-world code base.
 
 ## What is Functional Programming?
-With the popularity of frameworks and libraries, such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/), fp is has gotten lot of attention in the JavaScript community. But what is it and how can our programs benefit from it? Though fp has a reputation for being academic, it's main prinicples are simple to grasp and directly address common challenges when programming in a more procedural style.
+With the popularity of frameworks and libraries, such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/), fp is has gotten lot of attention in the JavaScript community.
 
-Fp is a way to solve larger problems by fitting together small, focused, *pure* functions, preferring immutable data structures over side-effects, stateful objects and mutable data. Functional solutions also tend to be more declarative rather than imperative. Functional programs read more like a spec than a list of instructions to the computer.
+Fp is, as [Martin Odesky](https://en.wikipedia.org/wiki/Martin_Odersky) is simply an alias for programming with functions.  That is, it's fitting together small, focused, *pure* functions to solve a greater problem. The style prefers functions over stateful objects and side effects and aims to represent data with immutable data structures. Functional solutions also tend to be more declarative rather than imperative.
 
-To make this more concrete, we'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style.
+Though fp is a broad and sometimes complex subject, its main prinicples are quite simple and directly address common challenges when programming in more traditional styles. In this particular post we'll focus on the following charateristics of fp:
+
+1. Purity over side effects 
+1. Immutablity over mutability
+1. Composition over inheritance
+
+To make this all more concrete, we'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style. Of course one blog post is insufficient to teach all of fp, so our example will be somewhat contrived in order to quickly illustrate the essence of what we are trying to achieve when using fp.
 
 ## A Procedural Implementation
 Ready? Let's go. Imagine data in a JSON file representing salary information for employees over a year:
