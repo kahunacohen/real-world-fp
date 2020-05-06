@@ -328,26 +328,23 @@ Let's code-review this approach. A few observations:
 
 ## A Functional Implementation
 
-Before we code let's think about a few things that will guide is, namely state and function composition.
+We'll now use fp to address the deficiencies we noted. Before we start, though, let's discuss the two most important characteristics of fp: state management and function composition.
 
 ### State
-State is anything that needs to be persisted and remembered in a system, outside of our program's execution. For example:
+State is a volitile condition of a program with regard to the execution context. For our purposes it's anything that needs to be persisted or remembered across function invocations. It's often related to side-effects. For example:
 
-1. Writing to the screen
-1. Reading from user input
-1. Network connecitons
-1. Mutating the DOM etc.
+* boolean flags indicating a screen is in the process of fetching data
+* data retrieved from Ajax calls
+* User input
+* Output to the screen
 
-State is the hardest part of any program, in that it's hard to keep track of and reason about and hard to test in a reliable manner. And yet state is essential to almost all real-world programs. For the most part our programs need to have some kind of effect on the real world.
-
-The key is not avoiding state, but rather isolating it from the rest of our program. In our case, the state is the the data in the JSON file. Reading and writing to the file-system is something we'd want to wall-off. So the first function we want to create is getting the data from the file.
+A key component of fp is walling off state and marking it as such, because state is difficult to reason about, paralelize and test. In our case, the state is the the data in the JSON file and the filesystem we write to. 
 
 ### Function Composition
 
-Let's see how a functional approach to the problem can address the above deficiancies. When thinking functionally we'll try
-to view our programs as transformations, or pipelines of data. We have an input, in this case JSON representing employees, and an output: a CSV and HTML file with each employee's total salary. We'll then try to break each part of the problem into smaller pieces using pure functions.
+The second most important principle of fp is function composition. This is best explained by the Unix toolset, which is a collection of small, focused programs that can be piped together. Each program takes from `stdin` and outputs to `stdout`. The programs don't care about where they get their input and where they dump their output.
 
-Think about how the Unix toolset works. It's a collection of small, focused programs that take from `stdin` and output to `stdout`. The power and flexibility comes when you pipe these programs together. For example, to get the first name in alphebetical order of a list of unordered names in a file:
+The power and flexibility comes when we combine these programs together. For example, to get the first name in alphebetical order of a list of unordered names in a file:
 
 names.txt:
 ```
@@ -359,6 +356,25 @@ Albert
 $ cat names.txt | sort | head -n 1
 ```
 sends `Cohen` to `stdout`.
+
+So functional composition is simply using the output of one function as the input for another. We see this all the time, in the form of intermediate variables or nested invocations:
+
+```
+const exclaim = s => `${s}!`;
+const yell = s => s.toUpperCase();
+
+let exclaimed = exclaim("get out"); // "get out!"
+yell(exclaimed); // "GET OUT!"
+
+// or
+yell(exclaim("get out"));
+```
+
+That doesn't look as nice as the unix toolset does it. So let's fix it.
+
+Let's see how a functional approach to the problem can address the above deficiancies. When thinking functionally we'll try
+to view our programs as transformations, or pipelines of data. We have an input, in this case JSON representing employees, and an output: a CSV and HTML file with each employee's total salary. We'll then try to break each part of the problem into smaller pieces using pure functions.
+
 
 
 ## Challenges of Integrating into Existing Code Bases
