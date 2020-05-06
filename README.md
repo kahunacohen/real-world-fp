@@ -340,9 +340,7 @@ State is anything that needs to be persisted and remembered in a system, outside
 
 State is the hardest part of any program, in that it's hard to keep track of and reason about and hard to test in a reliable manner. And yet state is essential to almost all real-world programs. For the most part our programs need to have some kind of effect on the real world.
 
-The key is not avoiding state, is isolating it from the rest of our program. 
-
-In our case, the state is the the data in the JSON file. Reading and writing to the file-system is something we'd want to wall-off. So the first function we want to create is getting the data from the file.
+The key is not avoiding state, but rather isolating it from the rest of our program. In our case, the state is the the data in the JSON file. Reading and writing to the file-system is something we'd want to wall-off. So the first function we want to create is getting the data from the file.
 
 ### Function Composition
 
