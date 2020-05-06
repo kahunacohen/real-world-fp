@@ -5,7 +5,7 @@ This post is aimed for intermediate JavaScript programmers, and/or those with li
 ## What is Functional Programming?
 With the popularity of frameworks and libraries, such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/), fp is has gotten lot of attention in the JavaScript community.
 
-Fp is, as [Martin Odesky](https://en.wikipedia.org/wiki/Martin_Odersky) is simply an alias for programming with functions.  That is, it's fitting together small, focused, *pure* functions to solve a greater problem. The style prefers functions over stateful objects and side effects and aims to represent data with immutable data structures. Functional solutions also tend to be more declarative rather than imperative.
+Fp is, as [Martin Odesky](https://en.wikipedia.org/wiki/Martin_Odersky) the creator of [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)) says, is simply an "alias for programming with functions."  That is, it's fitting together small, focused, *pure* functions to solve a greater problem. The style prefers functions over stateful objects and side effects and aims to represent data with immutable data structures. Functional solutions also tend to be more declarative rather than imperative.
 
 Though fp is a broad and sometimes complex subject, its main prinicples are quite simple and directly address common challenges when programming in more traditional styles. In this particular post we'll focus on the following charateristics of fp:
 
