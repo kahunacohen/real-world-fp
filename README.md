@@ -329,7 +329,7 @@ Let's code-review this approach. A few observations:
 We'll now use fp to address the deficiencies we noted. Before we start, though, let's learn the very basics of fp as mentioned above: state management and function composition.
 
 ### Purity
-In fp we try to create the majority of our programs with pure functions. That is, functions that given *x* input **always** output *y* input.
+In fp we try to create the majority of our programs with pure functions. That is, functions that given *x* input **always** outputs *y* input.
 By necessity, pure functions avoid side-effects, which include:
 
 * reading from files
