@@ -333,7 +333,7 @@ Let's code-review this approach. A few observations:
 Let's see how a functional approach to the problem can address the above deficiancies. When thinking functionally we'll try
 to view our programs as transformations, or pipelines of data. We have an input, in this case JSON representing employees, and an output: a CSV and HTML file with each employee's total salary. We'll then try to break each part of the problem into smaller pieces using pure functions.
 
-Think about how the Unix toolset works. It's a collection of small, focused programs that take from `stdin` and output to `stdout`. The power and flexibility comes when you pipe these programs together. For example, get the first name in alphebetical order of a list of unordered names in a file:
+Think about how the Unix toolset works. It's a collection of small, focused programs that take from `stdin` and output to `stdout`. The power and flexibility comes when you pipe these programs together. For example, to get the first name in alphebetical order of a list of unordered names in a file:
 
 names.txt:
 ```
