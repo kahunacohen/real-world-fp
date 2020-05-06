@@ -352,14 +352,14 @@ Raymond
 Cohen
 Albert
 ```
-```
+```bash
 $ cat names.txt | sort | head -n 1
 ```
 sends `Cohen` to `stdout`.
 
 So functional composition is simply using the output of one function as the input for another. We see this all the time, in the form of intermediate variables or nested invocations:
 
-```
+```js
 const exclaim = s => `${s}!`;
 const yell = s => s.toUpperCase();
 
