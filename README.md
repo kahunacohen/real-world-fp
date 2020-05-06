@@ -353,6 +353,7 @@ Cohen
 Albert
 ```
 ```bash
+# read a text file, sort it, and take the first line.
 $ cat names.txt | sort | head -n 1
 ```
 sends `Cohen` to `stdout`.
