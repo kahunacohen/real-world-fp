@@ -328,4 +328,14 @@ Let's code-review this approach. A few observations:
 
 ## A Functional Implementation
 
+### The Broad View
+
+Let's see how a functional approach to the problem can address the above deficiancies. When thinking functionally we'll try
+to view our programs as transformations, for pipelines of data. We have an input, in this case JSON representing employees, and an output: a CSV and HTML file with each employee's total salary. We'll then try to break each part of the problem into smaller pieces using pure functions.
+
+### Thinking About State
+foo
+
+
+
 ## Challenges of Integrating into Existing Code Bases
