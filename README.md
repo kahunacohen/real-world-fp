@@ -347,8 +347,17 @@ cat names.txt | sort | head -n 1
 sends `Cohen` to `stdout`.
 
 ### Thinking About State
-foo
+State is anything that needs to be persisted and remembered in a system, outside of our program's execution. For example:
 
+1. Writing to the screen
+1. Reading from user input
+1. Network connecitons
+1. Mutating the DOM etc.
 
+State is the hardest part of any program, in that it's hard to keep track of and reason about and hard to test in a reliable manner. And yet state is essential to almost all real-world programs. For the most part our programs need to have some kind of effect on the real world.
+
+The key is not avoiding state, is isolating it from the rest of our program. 
+
+In our case, the state is the the data in the JSON file. Reading and writing to the file-system is something we'd want to wall-off. So the first function we want to create is getting the data from the file.
 
 ## Challenges of Integrating into Existing Code Bases
