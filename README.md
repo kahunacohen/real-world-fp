@@ -342,7 +342,7 @@ Cohen
 Albert
 ```
 ```
-cat names.txt | sort | head -n 1
+$ cat names.txt | sort | head -n 1
 ```
 sends `Cohen` to `stdout`.
 
