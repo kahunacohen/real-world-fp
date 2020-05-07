@@ -3,15 +3,13 @@
 This piece is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. I'll discuss the basics of functional programming (fp) is, why to use it and how to integrate it into a real-world code base.
 
 ## What is Functional Programming?
-With the popularity of frameworks and libraries, such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/), fp is has gotten lot of attention in the JavaScript community.
-
-Fp is, as [Martin Odesky](https://en.wikipedia.org/wiki/Martin_Odersky) the creator of [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)) says, is simply an "alias for programming with functions."  That is, it's fitting together small, focused, *pure* functions to solve a greater problem. Though fp is a broad and sometimes complex subject, its main prinicples are simple and directly address common challenges when programming in more traditional styles. In this post we'll focus on the following, main charateristics of fp:
+With the popularity of frameworks and libraries, such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/), fp is has gotten lot of attention in the JavaScript community. Though fp can be complex subject, its main prinicples are actually quite simple and useful in day-to-day programming. In this post we'll focus on these main charateristics of fp:
 
 1. Purity over side effects 
 1. Immutablity over mutability
 1. Composition over inheritance
 
-To make this all more concrete, we'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style. Of course one blog post is insufficient to teach all of fp, so our example will be somewhat contrived in order to quickly illustrate the essence of what we are trying to achieve when using fp.
+To illustrate these points we'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style. Of course one blog post is insufficient to teach all of fp, so our working example will be somewhat contrived in order to quickly illustrate the essence of what we are trying to achieve when using fp.
 
 ## A Procedural Example
 Ready? Let's go. Imagine data in a JSON file representing salary information for employees over a year:
@@ -314,23 +312,21 @@ describe("SalaryHTMLReporter", () => {
 
 Let's code-review this approach. A few observations:
 
-* The `write` methods perform side effects, namely reading and writing data from the file-system. The methods are *impure*, meaning the outputs of the `write` methods depend on state apart from their local scope, and their output is not guarenteed to be the same given the same input:
+* The `parse` and `write` methods are *impure*, meaning they perform side effects, namely reading and writing data from the file-system. How is this a problem?
   * What if the file at inPath` doesn't exist?
   * What if the file at `inPath` doesn't have read permissions?
   * What if the caller doesn't have write permissions for `outPath`?
-  * In general, the solution is monolihic and mixes concerns between data and how the data is output.
-  * To test the class, we have to read an input file, we have to read an output file, and we have to be sure to remove the output file before and after each test-run.
+  * To test the class, we need a lot of setup and teardown code: have to read an input file, we have to read an output file, and we have to be sure to remove the output file before and after each test-run.
   * What if the content of `inPath` is changed by a person or process? Can we reliably execute the `write` methods concurrently?
-* It's verbose and reads like a step-by-step recipe of how to get from the input to the output. Generally the more verbose code is the more likely we've introduced bugs. It's a bit hard to read and easy to "get lost in the trees."
+* The solution is verbose and reads like a step-by-step recipe of how to get from the input to the output. Generally the more verbose code is the more likely we've introduced bugs. It's a bit hard to read and easy to "get lost in the trees."
 * It mutates variables including `employeeTotal` and `this.parsedData` in the base class' `parse` method. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
 
 ## A Functional Implementation
 
-We'll now use fp to address the deficiencies we noted. Before we start, though, let's learn the very basics of fp as mentioned above: state management and function composition.
+We'll now use fp to address the above deficiencies. Before we start, though, let's discuss the main characteristics of fp which me mentioned at the beginining of the post.
 
 ### Purity
-In fp we try to create the majority of our programs with pure functions. That is, functions that given *x* input **always** outputs *y* input.
-By necessity, pure functions avoid side-effects, which include:
+In fp we try to program with as many pure functions as possible. That is, we design functions that given *x* input **always** output *y*. Pure functions also avoid side-effects, which include:
 
 * reading from files
 * writing to files
@@ -343,17 +339,17 @@ Why are pure functions so important? Because they are:
 
 * easy to reason about
 * easy to test
-* faciliate function composition (as explained farther below)
+* faciliate function composition (as explained later)
 
-Of course, any useful program performs side-effects, so we can't avoid them. But we can isolate side effects and mark them clearly as such.
+Of course, most useful programs perform side-effects. They need to reach out into the world and affect it, so we can't avoid them. But we can isolate side effects and clearly flag them.
 
 ### Immutability
 
 ### Function Composition
 
-The third most important principle of fp is function composition. This is best explained by the Unix toolset, which is a collection of small, focused programs that can be piped together. Each program takes from `stdin` and outputs to `stdout`. The programs don't care about where they get their input and where they dump their output.
+The third most important principle of fp is function composition. This is best explained by the Unix toolset, which is a collection of small, focused programs that can be piped together. Each program takes from `stdin` and outputs to `stdout`. Unix programs don't care about where they get their input from and where they dump their output.
 
-The power and flexibility comes when we combine these programs together. For example, to get the first name in alphebetical order of a list of unordered names in a file:
+The power and flexibility of this paradigm comes when we combine these small programs together. For example, to get the first name in alphebetical order of a list of unordered names in a file:
 
 names.txt:
 ```
@@ -367,7 +363,7 @@ $ cat names.txt | sort | head -n 1
 ```
 sends `Cohen` to `stdout`.
 
-So functional composition is simply using the output of one function as the input for another. We see this all the time, in the form of intermediate variables or nested invocations:
+So functional composition is simply using the output of one function as the input for another. You probably never thought much about this, but you see this all the time, in the form of intermediate variables or nested invocations:
 
 ```js
 const exclaim = s => `${s}!`;
@@ -380,9 +376,9 @@ upper(exclaimed); // "GET OUT!"
 upper(exclaim("get out"));
 ```
 
-That doesn't look as nice as the unix toolset does. Instead we can use Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
-to make the data pipeline clearer. `compose` takes any number of functions, starting at the right and passes each one's output to the function
-to the left. It returns a new function that is a *composition* of its arguments:
+That doesn't look as nice as the unix toolset does. It's not imediately clear that there's a transformation of data, so instead we can use a `compose` function that clarifies this. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
+will do. `compose` takes any number of functions, starting at the right and passes each one's output to the function
+to the left. It returns a new function that is a *composition* of all the passed functions:
 
 ```js
 import { compose } from "ramda";
@@ -396,7 +392,6 @@ yell("get out") // "GET OUT!"
 ```
 
 There's more to function composition than this, but these are the basics. It allows you to write small, focused functions
-to build larger functions. Note that `exclaim` and `upper` are pure functions. That is one of the reasons purity is so important.
-Without it, composition is impossible.
+to build larger functions. Note that `exclaim` and `upper` are pure functions. For every input they output the *same* value regardless of the context outside the functions' scope. This is what makes composition possible.
 
 ## Challenges of Integrating into Existing Code Bases
