@@ -345,6 +345,13 @@ Of course, most useful programs perform side-effects. They need to reach out int
 
 ### Immutability
 
+The second main characteristic of fp is immutablity. Immutablity 
+makes programs easier to reason about and thus less buggy. How many times have you, for example, tried to trace the value of an instance variable that was being modified by various instance methods and various times? 
+
+Immutability also lends itself to concurrency. It's easier to avoid race conditions if variables aren't mucked with after their initialized.
+
+An additional benefit of immutablity is that it gives you the ability to track application state programatically. For instance, if you were programming a video game, adhering to immutablity, you could easily show a "replay" of the game if you kept each state change, instead of mutating it. ugs 
+
 ### Function Composition
 
 The third most important principle of fp is function composition. This is best explained by the Unix toolset, which is a collection of small, focused programs that can be piped together. Each program takes from `stdin` and outputs to `stdout`. Unix programs don't care about where they get their input from and where they dump their output.
