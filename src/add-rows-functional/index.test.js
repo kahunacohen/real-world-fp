@@ -1,5 +1,7 @@
 const fs = require("fs");
 
+const getEmployees = (path) => fs.readFileSync(path, { encoding: "utf-8" });
+
 const yearlySalariesAsCSV = (xs) => {
   return (
     "Last Name,First Name,Total Payments\n" +
