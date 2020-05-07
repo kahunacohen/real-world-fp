@@ -435,6 +435,8 @@ Now let's compose the two functions we have so far:
 import { compose } from "ramda";
 
 const parseJSONFile = compose(JSON.parse, readFileSync);
+
+parseJSONFile(`${__dirname}/employees.json`); // returns an array of employee objects.
 ```
 
 `parseJSONFile` takes a path to a file, reads it, outputs a string and feeds the string to `JSON.parse`.
