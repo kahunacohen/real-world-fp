@@ -403,7 +403,7 @@ to build larger functions. Note that `exclaim` and `upper` are pure functions. F
 
 ## A Functional Implementation
 
-OK with the theory out of the way, now we're ready to refactor. Let's start, for now, by avoiding the cruft of classes and work with plain old functions. If we need to remember state, we'll consider using classes later.
+OK, with the theory out of the way, now we're ready to refactor. Let's start, for now, by avoiding the cruft of classes and work with plain old functions. If we need to remember state, we'll consider using classes later.
 
 We'll also try to consider the smallest chunks of functionality possible and their inputs and outputs. The first thing we need to do is get the data from the file. It's input is a path and its output is a string.
 
@@ -421,8 +421,8 @@ Why do we even need a function for this? Well, we don't necessarily, but there's
 detail in the call to `fs.readFileSync` that it will make our code more readable to abstract
 away a few of the details. To keep things simple, for now we are not accounting for errors.
 
-Do we need a test for this? I'd say no because it's so simple and I assume `fs.readFileSync` is well
-tested in the `fs` module source.
+Do we need a test for this? I'd say no because it's so simple and I assume `fs.readFileSync` well tested
+by someone else.
 
 ### Parsing the File
 
