@@ -424,11 +424,21 @@ away a few of the details. To keep things simple, for now we are not accounting 
 Do we need a test for this? I'd say no because it's so simple and I assume `fs.readFileSync` well tested
 by someone else.
 
-### Parsing the File
+### Parsing the String
 
+Our next step is parsing the string from the file to JSON. Well, we don't need to write that function--it already
+exists: `JSON.parse`.
 
+Now let's compose the two functions we have so far:
 
+```js
+import { compose } from "ramda";
 
+const parseJSONFile = compose(JSON.parse, readFileSync);
+```
 
+`parseJSONFile` takes a path to a file, reads it, outputs a string and feeds the string to `JSON.parse`.
+Simple enough, and notice how our program is becoming declarative. Our `parseJSON` file function literally says: read a file and
+parse its contents as JSON.
 
 ## Challenges of Integrating into Existing Code Bases
