@@ -401,4 +401,13 @@ yell("get out") // "GET OUT!"
 There's more to function composition than this, but these are the basics. It allows you to write small, focused functions
 to build larger functions. Note that `exclaim` and `upper` are pure functions. For every input they output the *same* value regardless of the context outside the functions' scope. This is what makes composition possible.
 
+## A Functional Implementation
+
+OK with the theory out of the way, now we're ready to refactor. Let's start, for now, by avoiding the cruft of classes and
+work with plain old functions. If we need to remember state, we'll consider using classes later.
+
+The first thing we need to do is get the data from the file. How about this:
+
+
+
 ## Challenges of Integrating into Existing Code Bases
