@@ -432,13 +432,18 @@ exists: `JSON.parse`.
 Now let's compose the two functions we have so far:
 
 ```js
-import { compose } from "ramda";
+const fs = require("fs");
+const { compose } = require("ramda");
 
-const parseJSONFile = compose(JSON.parse, readFileSync);
+const readFile = (path) => fs.readFileSync(path, { encoding: "utf-8" });
+
+const parseJSONFile = compose(JSON.parse, readFile);
+
+parseJSONFile(`${__dirname}/employees.json`); // Returns an arrau of employee objects.
 ```
 
-`parseJSONFile` takes a path to a file, reads it, outputs a string and feeds the string to `JSON.parse`.
-Simple enough, and notice how our program is becoming declarative. Our `parseJSON` file function literally says: read a file and
-parse its contents as JSON.
+`parseJSONFile` takes a path to a file, reads the file, outputs a string and feeds the string to `JSON.parse`.
+
+Note how, already, our program is more declarative. The `parseJSON` function definition literally says: read a file and parse its contents as JSON.
 
 ## Challenges of Integrating into Existing Code Bases
