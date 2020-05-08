@@ -7,10 +7,10 @@ const parseJSONFile = compose(JSON.parse, readFile);
 
 const makeTable = (employees) => {
   return [["Last Name", "First Name"]].concat(
-    employees.map((e) => [
-      e.lastName,
-      e.firstName,
-      e.pay.reduce((acc, curr) => acc + curr),
+    employees.map((x) => [
+      x.lastName,
+      x.firstName,
+      x.pay.reduce((acc, curr) => acc + curr),
     ])
   );
 };
