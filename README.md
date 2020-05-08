@@ -437,9 +437,9 @@ const { compose } = require("ramda");
 
 const readFile = (path) => fs.readFileSync(path, { encoding: "utf-8" });
 
-const parseJSONFile = compose(JSON.parse, readFile);
+const parseJSONFile = compose(JSON.parse, readFileSync);
 
-parseJSONFile(`${__dirname}/employees.json`); // Returns an arrau of employee objects.
+parseJSONFile(`${__dirname}/employees.json`); // returns an array of employee objects.
 ```
 
 `parseJSONFile` takes a path to a file, reads the file, outputs a string and feeds the string to `JSON.parse`.
