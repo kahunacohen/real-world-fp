@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const { compose } = require("ramda");
+const { compose, join } = require("ramda");
 
 const readFile = (p) => fs.readFileSync(p, { encoding: "utf-8" });
 const parseJSONFile = compose(JSON.parse, readFile);
@@ -105,6 +105,9 @@ describe("program", () => {
     ]);
   });
 });
+
+const x = compose(join("\n"), makeTable, parseJSONFile);
+console.log(x(`${__dirname}/employees.json`));
 
 // const getEmployees = (path) => fs.readFileSync(path, { encoding: "utf-8" });
 
