@@ -285,7 +285,7 @@ We'll also try to consider the smallest chunks of functionality possible and the
 
 How about this for getting the data from the file:
 
-```
+```js
 import fs;
 
 const readFileSync = (path) => fs.readFileSync(path, { encoding: "utf-8" });
@@ -319,5 +319,32 @@ parseJSONFile(`${__dirname}/employees.json`); // returns an array of employee ob
 `parseJSONFile` takes a path to a file, reads the file, outputs a string and feeds the string to `JSON.parse`.
 
 Note how, already, our program is more declarative. The `parseJSON` function definition literally says: read a file and parse its contents as JSON.
+
+### Transforming the Array of Objects to a Table
+
+Next, we need to transform the array of employee objects to a two-dimensional array, with each
+sub-array representing a row of data. The first row should be the header, like this:
+
+```js
+[
+  ["Last Name", "First Name"],
+  ["Doe", "John", 97234.76],
+  ["Jane", "Mary", 151928.21]
+]
+```
+
+Let's try to do this without mutating variables:
+
+```js
+const makeTable = (employees) => {
+  return [["Last Name", "First Name"]].concat(
+    employees.map((x) => [
+      x.lastName,
+      x.firstName,
+      x.pay.reduce((acc, curr) => acc + curr),
+    ])
+  );
+};
+```
 
 ## Challenges of Integrating into Existing Code Bases
