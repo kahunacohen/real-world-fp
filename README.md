@@ -197,7 +197,7 @@ class SalaryReporterHTMLReporter extends SalaryReporter {
 Let's do a pretend code-review:
 
 * The solution is verbose and reads like a detailed step-by-step recipe of how to get from the input to the output. Generally the more verbose code is the more likely we've introduced bugs. It's a bit hard to read and easy to "get lost in the trees."
-* It mutates variables including `employeeTotal` and `ret` in the base class' `parse` method. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
+* It mutates variables including `employeeTotal` and `ret` in the base class' `makeEmployeeSummaryTable` method. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
 * It writes to the instance variable, `employeeSummaryTable` in the constructor, which is then referenced in a different method, `report`. Writing and reading variables outside a function's scope can make program
 logic hard to follow.
 
