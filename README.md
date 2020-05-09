@@ -323,7 +323,8 @@ Note how, already, our program is more declarative. The `parseJSON` function def
 ### Transforming the Array of Objects to a Table
 
 Next, we need to transform the array of employee objects to a two-dimensional array, with each
-sub-array representing a row of data. The first row should be the header, like this:
+sub-array representing a row of data. The first row should be the header. Here's the output we want
+from this function:
 
 ```js
 [
