@@ -1,6 +1,6 @@
-# Functional Programming for Smarties
+# Functional Programming for Smarties (part 1)
 
-This piece is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. I'll discuss the basics of functional programming (fp) is, why to use it and how to integrate it into a real-world code base.
+This series is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll discuss the basics of functional programming (fp) is, why to use it and how to integrate it into a real-world code base.
 
 ## What is Functional Programming?
 With the popularity of frameworks and libraries, such as [ReactJs](https://reactjs.org/) and [RxJS](https://rxjs-dev.firebaseapp.com/), fp is has gotten lot of attention in the JavaScript community. Though fp can be complex subject, its main prinicples are actually quite simple and useful in day-to-day programming. In this post we'll focus on these main charateristics of fp:
