@@ -241,7 +241,8 @@ logic hard to follow.
 
 ## A Functional Implementation
 
-Now let's fix these issues by applying the principles of fp we mentioned in the beginning of this post.
+Now let's fix these issues by applying the principles of fp we mentioned in the beginning of this post. But before we get
+started let's discuss the principles in a bit more detail.
 
 ### Pure Functions as Primary Building Blocks
 
