@@ -12,7 +12,7 @@ We'll implement a typical programming task in a an object-oriented, procedural s
 
 Let's imagine we have data representing employees. We would like to:
 
-* Count the number of active employees
+* Return the number of active employees
 * Generate a CSV table of each active employee and the total amount of paychecks for the year.
 
 The data looks like this:
