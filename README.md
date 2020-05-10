@@ -1,6 +1,6 @@
 # Functional Programming for Smarties (part 1)
 
-This series is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore four, important three characteristics of functional programming (fp), namely:
+This series is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore three important characteristics of functional programming (fp), namely:
 
 1. pure functions as primary building blocks
 1. immutablity over mutability
