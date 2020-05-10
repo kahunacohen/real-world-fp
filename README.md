@@ -1,21 +1,28 @@
 # Functional Programming for Smarties (part 1)
 
-This series is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore four, important key characteristics of functional programming (fp), namely:
+This series is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore four, important three characteristics of functional programming (fp), namely:
 
-1. functions as core building blocks
+1. pure functions as primary building blocks
 1. immutablity over mutability
-1. pure functions over procedures
 1. composition over inheritance
 
-To illustrate these points we'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style.
+In later posts we'll explore other key aspects of fp, but for now these three will get us started.
 
-Let's imagine we are given the task for converting this data:
+We'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style and continue the refactor in later posts.
+
+Let's imagine we have data representing employees. We would like to:
+
+* Count the number of active employees
+* Generate a CSV table of each active employee and the total amount of paychecks for the year.
+
+The data looks like this:
 
 ```json
 [
   {
     "firstName": "John",
     "lastName": "Doe",
+    "active": true,
     "payments": [
       8333.33,
       8333.33,
@@ -34,6 +41,7 @@ Let's imagine we are given the task for converting this data:
   {
     "firstName": "Mary",
     "lastName": "Jane",
+    "active": true,
     "payments": [
       12083.33,
       12083.33,
@@ -50,12 +58,18 @@ Let's imagine we are given the task for converting this data:
     ]
   }
 ]
+{
+  "firstName": "Robert",
+  "lastName": "Brown",
+  "active": false,
+  "payments": [
+    2300,
+    1900
+  ]
+
+}
 ```
-
-to 
-
-CSV, where the total salary column is the sum of the monthly
-payments. When read by a program like Excel, the CSV would look like this table::
+The current, active employees should be `2`, and the CSV, when read by a program like Excel, should look like this:
 
 | Last Name  | First Name | Total Salary
 | ---------- | -----------| ------------
@@ -67,11 +81,13 @@ payments. When read by a program like Excel, the CSV would look like this table:
 We might start with a class like this:
 
 ```js
-const fs = require("fs");
-
 class SalaryReporter {
-  constructor(employees) {
-    this.empoyees = employees;
+  /**
+   * data {string} - A string of JSON.
+   */
+  constructor(data) {
+    // Ignore possible JSON parse errors for now.
+    this.empoyees = JSON.parse(employees);
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
   }
   /**
@@ -95,6 +111,15 @@ class SalaryReporter {
       // Add a row with the employee's info, including total salary
       let row = [employee.lastName, employee.firstName, employeeTotal];
       ret.push(row);
+    }
+    return ret;
+  }
+  getActiveEmployees() {
+    let ret = 0;
+    for (let i = 0; i < this.employees.length; i++) {
+      if (employees[i].active) {
+        return ret += 1;
+      }
     }
     return ret;
   }
@@ -107,7 +132,7 @@ class SalaryReporter {
 }
 ```
 
-Now imagine that, in addition to a CSV file, we are asked to generate an HTML report. One approach might be to create a hierarchy of `SalaryReporter` classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter. We
+Now imagine that, in addition to a CSV file, we are asked to generate an HTML report. We could create a hierarchy of `SalaryReporter` classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter. We
 just extract out the `report` method:
 
 ```js
@@ -115,6 +140,15 @@ class SalaryReporter {
   constructor(employees) {
     this.empoyees = employees;
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
+  }
+  getActiveEmployees() {
+    let ret = [];
+    for (let i = 0; i < this.employees.length; i++) {
+      if (employees[i].active) {
+        ret.push(employees[i]);
+      }
+    }
+    return ret;
   }
   /**
    * @returns {Array} - A 2 dim array, with each sub array representing a row
@@ -143,12 +177,15 @@ class SalaryReporter {
 }
 ```
 
+`makeEmployeeSummaryTable`, transforms the raw employee data into a data structure suitable for various
+kinds of tabular reports.
+
 Now, let's extend this base class to write a CSV report. The subclass cares only about it's specialization, in this case returning the CSV representatiion of the table:
 
 ```js
 ...
 class SalaryCSVReporter extends SalaryReporter {
-  report(outPath) {
+  report() {
     return this.employeeSummaryTable.join("\n");
   }
 }
@@ -194,42 +231,39 @@ class SalaryReporterHTMLReporter extends SalaryReporter {
 }
 ```
 
-Let's do a pretend code-review:
+Now, for a code review:
 
-* The solution is verbose and reads like a detailed step-by-step recipe of how to get from the input to the output. Generally the more verbose code is the more likely we've introduced bugs. It's a bit hard to read and easy to "get lost in the trees."
-* It mutates variables including `employeeTotal` and `ret` in the base class' `makeEmployeeSummaryTable` method. Not only is this unnecessary, it makes it harder to reason about, and it's bug-bait.
+* Our solution is unnecessarily verbose, which makes it hard to read and introduces more opportunties for bugs.
+* It mutates variables including `employeeTotal` and `ret` in the base class' `makeEmployeeSummaryTable`
+and the `getActiveEmployees` method. Not only is this unnecessary, it makes it harder to reason about. It also contributes to the verbosity as stated above.
 * It writes to the instance variable, `employeeSummaryTable` in the constructor, which is then referenced in a different method, `report`. Writing and reading variables outside a function's scope can make program
 logic hard to follow.
 
 ## A Functional Implementation
 
-Now let's use some principles of fp to address the above deficiencies. Before we start, though, let's discuss the main characteristics of fp which me mentioned at the beginining of the post.
+Now let's fix these issues by applying the principles of fp we mentioned in the beginning of this post.
 
-### Functions as Building Blocks
+### Pure Functions as Primary Building Blocks
 
 In general, fp emphasizes plain old functions as first-class citizens and the core building blocks of programs. We pass functions to other functions and avoid classes unless absolutely necessary. In other
 words, we start with functions and use classes only if we have a good reason to do so so.
-
-### Immutability
-
-The second main characteristic of fp is immutablity. Immutability means *not* modifying variables in-place, or after they are initialized.  Immutablity makes programs easier to reason about and thus less buggy. Immutability also lends itself to concurrency. It's easier to avoid race conditions if variables aren't man-handled in arbitrary locations.
-
-An additional benefit of immutablity is that it allows us to track application state programatically. For instance, if you were developing a video game, and you preserved application state, instead of destroying it, you could easily show a "replay" of the game. 
-
-### Purity
 
 In fp we try to program not only with functions as much as possible, but also with *pure* functions. Pure
 functions are functions that given *x* input **always** return the same output, *y*. Pure functions also avoid side-effects which we'll come back to in a later post.
 
 Why are pure functions so important? Because they are:
 
-* easy to reason about
+* easy to reason about, by subsituting a function call with the value it returns
 * easy to test
 * faciliate function composition (as explained later)
 
-### Composition over Inheretance
+### Immutability
 
-This means we avoid classical inheratance, and instead stress building larger pieces of application logic by combining smaller functions in pipelines to *transform* data. This is best illustrated by the Unix toolset, which is a collection of small, focused programs that can be piped together. Each program takes from `stdin` and outputs to `stdout`. Unix programs don't care about where they get their input from and where they dump their output.
+The second main characteristic of fp is immutablity. Immutability means *not* modifying variables in-place, or after they are initialized.  Like using pure functions, immutablity makes programs easier to reason about and thus less buggy. Immutability also lends itself to concurrency. It's easier to avoid race conditions if variables aren't man-handled in arbitrary locations.
+
+### Composition over Inheritance
+
+In fp composition is used instead of inheritance. We specialize by plugging smaller functions together to make larger functions using pipelines to *transform* data. This is best illustrated by the Unix toolset, which is a collection of small, focused programs that can be strung together. Each program takes from `stdin` and outputs to `stdout`. Unix programs don't care about where they get their input from and where they dump their output.
 
 The power and flexibility of this paradigm comes when we combine these small programs together. For example, to get the first name in alphebetical order of a list of unordered names in a file:
 
@@ -245,7 +279,7 @@ $ cat names.txt | sort | head -n 1
 ```
 sends `Cohen` to `stdout`.
 
-So functional composition is simply using the output of one function as the input for another. You probably never thought much about this, but you see this all the time, in the form of intermediate variables or nested invocations:
+So, functional composition is simply using the output of one function as the input for another. We use this all the time, in the form of intermediate variables or nested invocations:
 
 ```js
 const exclaim = s => `${s}!`;
@@ -258,7 +292,7 @@ upper(exclaimed); // "GET OUT!"
 upper(exclaim("get out"));
 ```
 
-That doesn't look as nice as the unix toolset does. It's not imediately clear that there's a transformation of data, so instead we can use a `compose` function that clarifies this. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
+That's not as easy to read as Unix pipes, especially when piping together more than two functions. It's not imediately clear that there's a transformation of data, so instead we can use a `compose` function that clarifies this. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
 will do. `compose` takes any number of functions, starting at the right and passes each one's output to the function
 to the left. It returns a new function that is a *composition* of all the passed functions:
 
@@ -269,12 +303,14 @@ import { compose } from "ramda";
 const exclaim = s => `${s}!`;
 const upper = s => s.toUpperCase();
 
+// Create a new function, yell that's a composition of upper and exclaim
 const yell = compose(upper, exclaim);
 yell("get out") // "GET OUT!"
 ```
 
 There's more to function composition than this, but these are the basics. It allows you to write small, focused functions
-to build larger functions. Note that `exclaim` and `upper` are pure functions. For every input they output the *same* value regardless of the context outside the functions' scope. This is what makes composition possible.
+to build larger functions. The fact that `exclaim` and `upper` are pure functions makes this composition
+possible.
 
 ## A Functional Implementation
 
@@ -284,10 +320,7 @@ We'll also try to consider the smallest chunks of functionality possible and the
 
 ### Parsing the String
 
-Our next step is parsing the string from the file to JSON. Well, we don't need to write that function--it already
-exists: `JSON.parse`.
-
-Now let's compose the two functions we have so far:
+Our first step is parsing the string from our data source to JSON. Well, we don't need to write that function. It already exists: `JSON.parse`.
 
 ```js
 const fs = require("fs");
