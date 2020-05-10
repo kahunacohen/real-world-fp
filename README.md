@@ -258,6 +258,10 @@ Why are pure functions so important? Because they are:
 * easy to test
 * faciliate function composition (as explained later)
 
+In our example code, `getActiveEmployees` and `makeEmployeeSummaryTable` are both *impure* because they rely on variables
+outside their scopes as input and output. Remember a pure function always *returns* its output based on its parameters, and given the same parameters always returns the same result. `getActiveEmployees`, besides for the fact that it doesn't take any
+parameters can return a different result based on the value of `this.employees`, which is set outside its context.
+
 ### Immutability
 
 The second main characteristic of fp is immutablity. Immutability means *not* modifying variables in-place, or after they are initialized.  Like using pure functions, immutablity makes programs easier to reason about and thus less buggy. Immutability also lends itself to concurrency. It's easier to avoid race conditions if variables aren't man-handled in arbitrary locations.
