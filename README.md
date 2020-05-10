@@ -327,6 +327,38 @@ We'll also try to consider the smallest chunks of functionality possible and the
 
 Our first step is parsing the string from our data source to JSON. Well, we don't need to write that function. It already exists: `JSON.parse`.
 
+### Making the Tabular Data Structure
+
+Given an array of employee objects from a string we need to create the two-dimensional array that can represent a table:
+
+```js
+const makeTable = (employees) => {
+  return [["Last Name", "First Name"]].concat(
+    employees.map((x) => [
+      x.lastName,
+      x.firstName,
+      x.pay.reduce((acc, curr) => acc + curr),
+    ])
+  );
+};
+```
+Remember, we want an array of arrays, each sub-array is a row of the table.
+
+1. We `concat` the header row and [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) each employee object to a an array of whose elements are first name, last name and
+total pay. `map` is a critical tool for functional programmers. It's called a *higher order* function because it takes a function as
+an argument. It *maps* over arrays, applying a function to each element and returning a *new* array.
+1. Instead of mutating an accumulator variable, we apply the [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) function to the employee's `pay` array. `reduce` is another higher order function that 
+takes a function with an accumulator and current element parameter. It is typically used to operate on arrays and reduce them to one
+value. In this case we reduce the `pay` array and sum its elements.
+
+Note how concise our function is. We do not mutate any local variables and are simply transforming our input array to another array
+that's suitable for rendering in tabular format. We can now compose two functions to take a JSON string and transform it to
+our tabular array:
+
+```js
+foo
+```
+
 ```js
 const fs = require("fs");
 const { compose } = require("ramda");
