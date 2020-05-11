@@ -476,7 +476,7 @@ const employeeSummaryAsHTML = compose(
 );
 ```
 
-Here, employeeSummaryFromFile acts as our base class. We specialize what we do with the data by adding 
+Here, `employeeSummaryFromFile` acts as our base class. We specialize what we do with the data by adding 
 different functions to the composition.
 
 ## Challenges of Integrating into Existing Code Bases
