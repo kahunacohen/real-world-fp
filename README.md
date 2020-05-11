@@ -351,7 +351,7 @@ compose(
 ### Filtering for active employees
 
 Next, we want to filter out inactive employees, which we can do easily with the higher order function,
-`Array.filter`. Let's try to compose `JSON.parse` with filter. 
+`Array.filter`. Let's try to add `filter` to our composition: 
 
 ```js
 ...
