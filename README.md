@@ -470,6 +470,10 @@ const employeeSummaryAsCSV = compose(
   employeeSummaryFromFile
 );
 
+const asHtml = table => {
+
+};
+
 const employeeSummaryAsHTML = compose(
   asHtml, // not defined yet...
   employeeSummaryFromFile
@@ -478,5 +482,7 @@ const employeeSummaryAsHTML = compose(
 
 Here, `employeeSummaryFromFile` acts as our base class. We specialize what we do with the data by adding 
 different functions to the composition.
+
+Let's define
 
 ## Challenges of Integrating into Existing Code Bases
