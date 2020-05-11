@@ -438,8 +438,45 @@ compose(
 );
 ```
 
-### HTML
-Because we also need to 
+### Output CSV
 
+We may want to output the CSV somehow. Let's say, for now, we just want to print it to `stdout`. We can simply add `console.log` to the composition:
+
+```js
+compose(
+  console.log,
+  join("\n"),
+  makeSummaryTable,
+  filter(empl => empl.active)
+  JSON.parse,
+  readFile(`${__dirname}/employees.json`)
+);
+```
+### HTML
+
+Because we are also being asked to output HTML, we need a function that takes the tabular data and transforms it to HTML.
+Meanwhile we can break apart the pipeline to make it more granular.
+
+```js
+const employeeSummaryFromFile = compose(
+  makeSummaryTable,
+  filter(empl => empl.active)
+  JSON.parse,
+  readFile(`${__dirname}/employees.json`)
+);
+
+const employeeSummaryAsCSV = compose(
+  join("\n"),
+  employeeSummaryFromFile
+);
+
+const employeeSummaryAsHTML = compose(
+  asHtml, // not defined yet...
+  employeeSummaryFromFile
+);
+```
+
+Here, employeeSummaryFromFile acts as our base class. We specialize what we do with the data by adding 
+different functions to the composition.
 
 ## Challenges of Integrating into Existing Code Bases
