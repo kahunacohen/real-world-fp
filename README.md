@@ -298,8 +298,8 @@ upper(exclaim("get out"));
 ```
 
 That's not as easy to read as Unix pipes, especially when piping together more than two functions. It's not imediately clear that there's a transformation of data, so instead we can use a `compose` function that clarifies this. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
-will do. `compose` takes any number of functions, starting at the right and passes each one's output to the function
-to the left. It returns a new function that is a *composition* of all the passed functions:
+will do. `compose` takes any number of functions, starting at the right and passes each one's output to the function to the left. Ramda is an fp JavaScript utility library. Its `compose` function
+returns a new function that is a *composition* of all the passed functions:
 
 ```js
 import { compose } from "ramda";
@@ -321,11 +321,64 @@ possible.
 
 OK, with the theory out of the way, now we're ready to refactor. Let's start, for now, by avoiding the cruft of classes and work with plain old functions. If we need to remember state, we'll consider using classes later.
 
-We'll also try to consider the smallest chunks of functionality possible and their inputs and outputs. 
+Our strategy is to create a new function that strings together simple functions together in a pipeline, each one consuming the output of the and feeding its output to the next one:
 
-### Parsing the String
+```
+Read JSON string > JSON.parse > filter for active employees > make tabular data structure > make CSV/HTML table > print to screen | write to file etc.
+```
 
-Our first step is parsing the string from our data source to JSON. Well, we don't need to write that function. It already exists: `JSON.parse`.
+### Getting the JSON String
+
+We already have a function for this, `fs.readFileSync`, but it's a bit clumsy. Let's clean it up for
+our purposes:
+
+```js
+const fs = require("fs");
+
+const readFile = (path) => fs.readFileSync(path, {encoding: "utf-8"});
+```
+### Parsing the JSON String
+
+Our next step is parsing the string from our data source to JSON. We don't need to write that function. It already exists: `JSON.parse`. Let's start composing what we have so far:
+
+```js
+compose(
+  JSON.parse,
+  readFile(`${__dirname}/employees.json`)
+);
+```
+
+### Filtering for active employees
+
+Next, we want to filter out inactive employees, which we can do easily with the higher order function,
+`Array.filter`. Let's try to compose `JSON.parse` with filter. 
+
+```js
+...
+compose(
+  filter((empl) => empl.active)
+  JSON.parse,
+  readFile(`${__dirname}/employees.json`)
+);
+```
+
+This, will of course, fail because `filter` is a method on `Array`s prototype. We need `filter`
+to take the data we are working on as a parameter. As a convenience, Ramda includes a number of higher order `Array`
+methods, including `filter`, `map` etc. that take the data as the last argument, allowing us to
+compose them. So, now are composition looks like this:
+
+```js
+const fs = require("fs");
+const { compose, filter } = require("ramda");
+
+compose(
+  filter(empl => empl.active)
+  JSON.parse,
+  readFile(`${__dirname}/employees.json`)
+);
+```
+
+Are you seeing how declarative this is? Our function definition tells us exactly what's going on: 1. We read string in from a file, 2. parse it to JSON, filter active employees etc.
 
 ### Making the Tabular Data Structure
 
@@ -388,7 +441,7 @@ from this function:
 ]
 ```
 
-Let's try to do this without mutating variables:
+Let's do this without mutating variables:
 
 ```js
 const makeTable = (employees) => {
@@ -401,5 +454,7 @@ const makeTable = (employees) => {
   );
 };
 ```
+
+We use `map` to map the first and last names from the original employee objects and `reduce`
 
 ## Challenges of Integrating into Existing Code Bases
