@@ -378,14 +378,19 @@ compose(
 );
 ```
 
-Are you seeing how declarative this is? Our function definition tells us exactly what's going on: 1. We read string in from a file, 2. parse it to JSON, filter active employees etc.
+Are you seeing how declarative this is? Our function definition tells us exactly what's going on here: 
+
+1. We read string in from a file
+2. parse it to JSON
+3. filter active employees etc.
 
 ### Making the Tabular Data Structure
 
-Given an array of employee objects from a string we need to create the two-dimensional array that can represent a table:
+Next in our pipeline is transforming the employee objects to a two-dimensional array that can represent a summary table.
+We want to return an array of arrays, each sub-array a row of the table. The first row contains the table headers:
 
 ```js
-const makeTable = (employees) => {
+const makeSummaryTable = (employees) => {
   return [["Last Name", "First Name"]].concat(
     employees.map((x) => [
       x.lastName,
@@ -395,66 +400,46 @@ const makeTable = (employees) => {
   );
 };
 ```
-Remember, we want an array of arrays, each sub-array is a row of the table.
 
-1. We `concat` the header row and [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) each employee object to a an array of whose elements are first name, last name and
-total pay. `map` is a critical tool for functional programmers. It's called a *higher order* function because it takes a function as
+1. We `concat` the header row and [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) each employee object to a an array whose elements are first name, last name and
+total pay.
+`map` is a critical tool for functional programmers. It's called a *higher order* function because it takes a function as
 an argument. It *maps* over arrays, applying a function to each element and returning a *new* array.
-1. Instead of mutating an accumulator variable, we apply the [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) function to the employee's `pay` array. `reduce` is another higher order function that 
-takes a function with an accumulator and current element parameter. It is typically used to operate on arrays and reduce them to one
-value. In this case we reduce the `pay` array and sum its elements.
+1. Instead of mutating an accumulator variable to calculate payment totals, we apply the [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) function to the employee's `pay` array. `reduce` is another critical higher order function that takes as a parameter a reducer function with an accumulator and current element parameter. It is typically used to operate on arrays and reduce them to one value. In this case we reduce the `pay` array elements to their sum.
 
-Note how concise our function is. We do not mutate any local variables and are simply transforming our input array to another array
-that's suitable for rendering in tabular format. We can now compose two functions to take a JSON string and transform it to
-our tabular array:
+Note how concise our function is. We don't mutate any local variables and are simply transforming our input array to another array
+that's suitable for rendering in tabular format. Let's add it to our composition:
 
 ```js
-foo
+...
+compose(
+  makeSummaryTable,
+  filter(empl => empl.active)
+  JSON.parse,
+  readFile(`${__dirname}/employees.json`)
+);
 ```
+
+### CSV
+
+To output this data structure to CSV we need to just join it on new-lines (well, actually in production code you'd use
+a CSV library). Again we can use the `join` function from Ramda, which instead of being a method on `Array`, takes the array
+as the last parameter, which in our case is implicit since it's being passed along in the pipeline. Let's add it:
 
 ```js
-const fs = require("fs");
-const { compose } = require("ramda");
+const { compose, filter, join } = require("ramda");
 
-const readFile = (path) => fs.readFileSync(path, { encoding: "utf-8" });
-
-const parseJSONFile = compose(JSON.parse, readFileSync);
-
-parseJSONFile(`${__dirname}/employees.json`); // returns an array of employee objects.
+compose(
+  join("\n"),
+  makeSummaryTable,
+  filter(empl => empl.active)
+  JSON.parse,
+  readFile(`${__dirname}/employees.json`)
+);
 ```
 
-`parseJSONFile` takes a path to a file, reads the file, outputs a string and feeds the string to `JSON.parse`.
+### HTML
+Because we also need to 
 
-Note how, already, our program is more declarative. The `parseJSON` function definition literally says: read a file and parse its contents as JSON.
-
-### Transforming the Array of Objects to a Table
-
-Next, we need to transform the array of employee objects to a two-dimensional array, with each
-sub-array representing a row of data. The first row should be the header. Here's the output we want
-from this function:
-
-```js
-[
-  ["Last Name", "First Name"],
-  ["Doe", "John", 97234.76],
-  ["Jane", "Mary", 151928.21]
-]
-```
-
-Let's do this without mutating variables:
-
-```js
-const makeTable = (employees) => {
-  return [["Last Name", "First Name"]].concat(
-    employees.map((x) => [
-      x.lastName,
-      x.firstName,
-      x.pay.reduce((acc, curr) => acc + curr),
-    ])
-  );
-};
-```
-
-We use `map` to map the first and last names from the original employee objects and `reduce`
 
 ## Challenges of Integrating into Existing Code Bases
