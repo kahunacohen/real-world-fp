@@ -225,10 +225,10 @@ Here are our [tests](src/salary-reporter-hierarchy.test.js).
 And now, for a code review of our solution:
 
 * Our solution is unnecessarily verbose, which makes it hard to read and introduces more opportunties for bugs.
-* It mutates variables including `employeeTotal` and `ret` in the base class' `makeEmployeeSummaryTable`
-and the `getActiveEmployees` method. Not only is this unnecessary, it makes it harder to reason about. It also contributes to the verbosity as stated above.
-* It writes to the instance variable, `employeeSummaryTable` in the constructor, which is then referenced in a different method, `report`. Writing and reading variables outside a function's scope can make program
-logic hard to follow.
+* It mutates variables including `employeeTotal` and `ret` in the base class' `makeEmployeeSummaryTable` and the instance
+variable `employeeSummaryTable`. Not only is this unnecessary, it makes it harder to reason about. It also contributes to the verbosity as stated above.
+* Writing tests is unncessarily hard. Because we are reading and writing to the file system, we have to ensure those files 
+exist and are writable before each test and are removed after.
 
 ## A Functional Implementation
 
