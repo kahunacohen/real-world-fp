@@ -4,7 +4,7 @@
   "description": "Introducing a Functional Programming Paradigm to Existing Web App Code Bases",
   "main": "index.js",
   "scripts": {
-    "test": "jest src/test.js",
+    "test": "jest src/salary-reporter.test.js",
     "prettier": "find ./src -name '*.js' -exec prettier --write {} +"
   },
   "author": "Aaron Cohen",
