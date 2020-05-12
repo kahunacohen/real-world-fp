@@ -123,6 +123,8 @@ class SalaryReporter {
 }
 ```
 
+If you're interested in how to test this, see [here](src/salary-reporter.test.js).
+
 Now imagine that, in addition to a CSV file, we are asked to generate an HTML report. We could create a hierarchy of `SalaryReporter` classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter. We
 just extract out the `report` method:
 
