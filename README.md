@@ -76,6 +76,8 @@ Let's imagine we have data in JSON representing employees. For now, we'll fetch 
 We might start with a class like this:
 
 ```js
+const fs = require("fs");
+
 class SalaryReporter {
   constructor(path) {
     // Ignore possible JSON parse errors for now.
