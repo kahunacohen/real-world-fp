@@ -44,8 +44,8 @@ class SalaryReporter {
   }
 }
 
-describe("post", () => {
-  describe("SalaryReporter1", () => {
+describe("monolithic SalaryReporter", () => {
+  describe("SalaryReporter", () => {
     const outPath = `${__dirname}/employees.csv`;
     beforeEach(() => {
       if (fs.existsSync(outPath)) {

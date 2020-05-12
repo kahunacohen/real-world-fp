@@ -123,23 +123,16 @@ class SalaryReporter {
 }
 ```
 
-Now imagine that, in addition to a CSV file, we are asked to generate an HTML report. We could create a hierarchy of `SalaryReporter` classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter. We
-just extract out the `report` method:
+Now we've been asked to also generate an HTML report. We could create a hierarchy of `SalaryReporter` classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter. We just extracted out the `report` method:
 
 ```js
+const fs = require("fs");
+
 class SalaryReporter {
-  constructor(employees) {
-    this.empoyees = employees;
+  constructor(path) {
+    // Ignore possible JSON parse errors for now.
+    this.employees = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
-  }
-  getActiveEmployees() {
-    let ret = [];
-    for (let i = 0; i < this.employees.length; i++) {
-      if (employees[i].active) {
-        ret.push(employees[i]);
-      }
-    }
-    return ret;
   }
   /**
    * @returns {Array} - A 2 dim array, with each sub array representing a row
@@ -151,33 +144,36 @@ class SalaryReporter {
 
     // For each employee...
     for (let i = 0; i < this.employees.length; i++) {
-      const employee = this.data[i];
-      let employeeTotal = 0;
+      const employee = this.employees[i];
 
-      // Sum the yearly payments
-      for (let j = 0; j < employee.pay.length; j++) {
-        employeeTotal += employee.pay[j];
+      // Only active employees
+      if (employee.active) {
+        let employeeTotal = 0;
+
+        // Sum the yearly payments
+        for (let j = 0; j < employee.pay.length; j++) {
+          employeeTotal += employee.pay[j];
+        }
+
+        // Add a row with the employee's info, including total salary
+        let row = [employee.lastName, employee.firstName, employeeTotal];
+        ret.push(row);
       }
-
-      // Add a row with the employee's info, including total salary
-      let row = [employee.lastName, employee.firstName, employeeTotal];
-      ret.push(row);
     }
     return ret;
   }
 }
 ```
 
-`makeEmployeeSummaryTable`, transforms the raw employee data into a data structure suitable for various
-kinds of tabular reports.
-
-Now, let's extend this base class to write a CSV report. The subclass cares only about it's specialization, in this case returning the CSV representatiion of the table:
+Now, let's extend this base class to write a CSV report. The subclass cares only about it's specialization, writing a CSV file:
 
 ```js
 ...
 class SalaryCSVReporter extends SalaryReporter {
-  report() {
-    return this.employeeSummaryTable.join("\n");
+  report(path) {
+    fs.writeFileSync(path, this.employeeSummaryTable.join("\n"), {
+      encoding: "utf-8",
+    });
   }
 }
 ```
@@ -186,12 +182,14 @@ Now the HTML reporter. We'll, again, subclass `SalaryReporter`, overriding the `
 
 ```js
 ...
-class SalaryReporterHTMLReporter extends SalaryReporter {
-  report() {
+class SalaryHTMLReporter extends SalaryReporter {
+  report(path) {
     const date = new Date();
     const headerRow =
       "<tr>" +
-      this.employeeSummaryTable[0].map((heading) => `<th>${heading}</th>`).join("") +
+      this.employeeSummaryTable[0]
+        .map((heading) => `<th>${heading}</th>`)
+        .join("") +
       "</tr>";
 
     const dataRows = this.employeeSummaryTable
@@ -217,12 +215,14 @@ class SalaryReporterHTMLReporter extends SalaryReporter {
       </table>
     </body>
   </html>`;
-    return html;
+    fs.writeFileSync(path, html, { encoding: "utf-8" });
   }
 }
 ```
 
-Now, for a code review:
+Here are our [tests](src/salary-reporter-hierarchy.test.js).
+
+And now, for a code review of our solution:
 
 * Our solution is unnecessarily verbose, which makes it hard to read and introduces more opportunties for bugs.
 * It mutates variables including `employeeTotal` and `ret` in the base class' `makeEmployeeSummaryTable`
