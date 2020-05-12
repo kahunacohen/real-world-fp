@@ -12,7 +12,7 @@ We'll implement a typical programming task in a an object-oriented, procedural s
 
 Let's imagine we have data in JSON representing employees. For now, we'll fetch it from a file. `employees.json`:
 
-```json
+```
 [
   {
     "firstName": "John",
