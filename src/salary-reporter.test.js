@@ -1,9 +1,6 @@
 const fs = require("fs");
 
 class SalaryReporter {
-  /**
-   * data {string} - A string of JSON.
-   */
   constructor(path) {
     // Ignore possible JSON parse errors for now.
     this.employees = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
@@ -33,15 +30,6 @@ class SalaryReporter {
         // Add a row with the employee's info, including total salary
         let row = [employee.lastName, employee.firstName, employeeTotal];
         ret.push(row);
-      }
-    }
-    return ret;
-  }
-  getActiveEmployees() {
-    let ret = 0;
-    for (let i = 0; i < this.employees.length; i++) {
-      if (employees[i].active) {
-        return (ret += 1);
       }
     }
     return ret;

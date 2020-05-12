@@ -1,21 +1,16 @@
 # Functional Programming for Smarties (part 1)
 
-This series is aimed for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore three important characteristics of functional programming (fp), namely:
+Functional programming (fp) has gotten a lot of attention in the JavaScript community lately, mostly due to the visiblity of [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
+
+But what is fp, and why should we program using it? In short, how can it make our life better? This series is for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore three important characteristics of functional programming, namely:
 
 1. pure functions as primary building blocks
 1. immutablity over mutability
 1. composition over inheritance
 
-In later posts we'll explore other key aspects of fp, but for now these three will get us started.
-
 We'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style and continue the refactor in later posts.
 
-Let's imagine we have data representing employees. We would like to:
-
-* Return the number of active employees
-* Generate a CSV table of each active employee and the total amount of paychecks for the year.
-
-The data looks like this:
+Let's imagine we have data in JSON representing employees. For now, we'll fetch it from a file. `employees.json`:
 
 ```json
 [
@@ -66,28 +61,25 @@ The data looks like this:
     2300,
     1900
   ]
-
 }
 ```
-The current, active employees should be `2`, and the CSV, when read by a program like Excel, should look like this:
+
+ We would like to generate a file containing a CSV table of each active employee and the total amount of paychecks for the year. The table should look like this when the output file is imported into a spreadsheet program:
 
 | Last Name  | First Name | Total Salary
 | ---------- | -----------| ------------
 | Doe        | John       |  97234.76
 | Jane       | Mary       | 151928.21
 
-## Procderual/Object-Oriented Approach
+## Prodedural/Object-Oriented Approach
 
 We might start with a class like this:
 
 ```js
 class SalaryReporter {
-  /**
-   * data {string} - A string of JSON.
-   */
-  constructor(data) {
+  constructor(path) {
     // Ignore possible JSON parse errors for now.
-    this.empoyees = JSON.parse(employees);
+    this.employees = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
   }
   /**
@@ -100,25 +92,20 @@ class SalaryReporter {
 
     // For each employee...
     for (let i = 0; i < this.employees.length; i++) {
-      const employee = this.data[i];
-      let employeeTotal = 0;
+      const employee = this.employees[i];
 
-      // Sum the yearly payments
-      for (let j = 0; j < employee.pay.length; j++) {
-        employeeTotal += employee.pay[j];
-      }
+      // Only active employees
+      if (employee.active) {
+        let employeeTotal = 0;
 
-      // Add a row with the employee's info, including total salary
-      let row = [employee.lastName, employee.firstName, employeeTotal];
-      ret.push(row);
-    }
-    return ret;
-  }
-  getActiveEmployees() {
-    let ret = 0;
-    for (let i = 0; i < this.employees.length; i++) {
-      if (employees[i].active) {
-        return ret += 1;
+        // Sum the yearly payments
+        for (let j = 0; j < employee.pay.length; j++) {
+          employeeTotal += employee.pay[j];
+        }
+
+        // Add a row with the employee's info, including total salary
+        let row = [employee.lastName, employee.firstName, employeeTotal];
+        ret.push(row);
       }
     }
     return ret;
@@ -126,8 +113,10 @@ class SalaryReporter {
   /**
    * @returns {String} - CSV string
    */
-  report() {
-    return this.employeeSummaryTable.join("\n");
+  report(path) {
+    fs.writeFileSync(path, this.employeeSummaryTable.join("\n"), {
+      encoding: "utf-8",
+    });
   }
 }
 ```
