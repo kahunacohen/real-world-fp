@@ -515,7 +515,7 @@ const employeeSummaryAsHTML = compose(
 );
 ```
 
-## Finishing Touches
-
+## Last Words
+We've accomplished addressing the deficiencies of the.
 
 ## Challenges of Integrating into Existing Code Bases
