@@ -516,6 +516,11 @@ const employeeSummaryAsHTML = compose(
 ```
 
 ## Last Words
-We've accomplished addressing the deficiencies of the.
+We've accomplished addressing the deficiencies of the procedural style code we wrote at the beginning of the post. The
+functional implementation:
 
-## Challenges of Integrating into Existing Code Bases
+1. is more concise, making it easier to quickly grasp and more likely to be correct. There is no unncessary fluff relating to classes etc. The code is declarative. It reads like a spec rather than a cryptic set of instructions.
+1. doesn't rely on or mutate variables outside each function's scope.
+1. is more modular. We can easily mix and match functions to achieve specialization instaed of using complex inheritance hierarchies.
+1. Writing tests is easy because we've walled off side-effects from the rest of the code. Asserting correct behavior
+of pure functions is way eaiser than checking side-effects.
