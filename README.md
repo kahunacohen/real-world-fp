@@ -413,9 +413,9 @@ compose(
 
 ### CSV
 
-To output this data structure to CSV we need to just join it on new-lines (well, actually in production code you'd use
-a CSV library). Again we can use the `join` function from Ramda, which instead of being a method on `Array`, takes the array
-as the last parameter, which in our case is implicit since it's being passed along in the pipeline. Let's add it:
+To output this data structure to CSV we need to simply join they array on new-lines (well, actually in production code you'd use
+a CSV library). Again, we can use the `join` function from Ramda, which takes the array we are working
+on as the last parameter. When composing, that last parameter is implicitely passed from the previous function in the pipeline. Let's add `join`:
 
 ```js
 const { compose, filter, join } = require("ramda");
@@ -431,7 +431,8 @@ compose(
 
 ### Output CSV
 
-We may want to output the CSV somehow. Let's say, for now, we just want to print it to `stdout`. We can simply add `console.log` to the composition:
+Now that we have CSV as a string, we may want to output the CSV somehow to a file or to the screen. 
+Let's just say, for now, we just want to print it to `stdout`. We can simply add `console.log` to the composition:
 
 ```js
 compose(
@@ -445,35 +446,76 @@ compose(
 ```
 ### HTML
 
-Because we are also being asked to output HTML, we need a function that takes the tabular data and transforms it to HTML.
-Meanwhile we can break apart the pipeline to make it more granular.
+Because we are also being asked to output HTML, we need a function that takes the tabular data and transforms it to HTML. Meanwhile we can break apart the composition to make it more granular.
 
 ```js
-const employeeSummaryFromFile = compose(
+const employeeTableFromFile = compose(
   makeSummaryTable,
   filter(empl => empl.active)
   JSON.parse,
   readFile(`${__dirname}/employees.json`)
 );
+```
 
+Now we have a function for returning the table from a file. Let's create another function for outputing CSV from that:
+
+```js
+...
 const employeeSummaryAsCSV = compose(
   join("\n"),
   employeeSummaryFromFile
 );
+```
 
-const asHtml = table => {
+We'll create a separate function which takes the two dimensional array and outputs an HTML string. To
+keep the function pure, we'll pass in the date instead of calculating it in the function body:
 
+```js
+...
+const asHTML = (table, date) => {
+    const headerRow =
+      "<tr>" +
+      this.employeeSummaryTable[0]
+        .map((heading) => `<th>${heading}</th>`)
+        .join("") +
+      "</tr>";
+
+    const dataRows = this.employeeSummaryTable
+      .slice(1) // Everything but the first row
+      .map((row) => {
+        const cells = row.map((data) => `<td>${data}</td>`).join("");
+        return `<tr>${cells}</tr>`;
+      })
+      .join("");
+
+    const html = `<html>
+    <head>
+      <title>Employee Report: ${date}</title>
+    </head>
+    <body>
+      <table>
+        <thead>
+          ${headerRow}
+        </thead>
+        <tbody>
+          ${dataRows}
+        </tbody>
+      </table>
+    </body>
+  </html>`;
 };
+```
 
+Now that we have a function for the HTML it's just a matter of plugging it in:
+
+```js
 const employeeSummaryAsHTML = compose(
-  asHtml, // not defined yet...
+  asHTML,
   employeeSummaryFromFile
 );
 ```
 
-Here, `employeeSummaryFromFile` acts as our base class. We specialize what we do with the data by adding 
-different functions to the composition.
+## Finishing Touches
 
-Let's define
 
 ## Challenges of Integrating into Existing Code Bases
