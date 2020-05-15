@@ -1,11 +1,11 @@
 # Functional Programming for Smarties (part 1)
 
-Functional programming (fp) has gotten a lot of attention in the JavaScript community lately, mostly due to the visiblity of [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
+Functional programming (fp) has gotten a lot of attention in the JavaScript community lately, mostly due to the visibility of [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
 
 But what is fp, and why should we program using it? In short, how can it make our life better? This series is for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore three important characteristics of functional programming, namely:
 
 1. pure functions as primary building blocks
-1. immutablity over mutability
+1. immutability over mutability
 1. composition over inheritance
 
 We'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style and continue the refactor in later posts.
@@ -227,7 +227,7 @@ And now, for a code review of our solution:
 * Our solution is unnecessarily verbose, which makes it hard to read and introduces more opportunties for bugs.
 * It mutates variables including `employeeTotal` and `ret` in the base class' `makeEmployeeSummaryTable` and the instance
 variable `employeeSummaryTable`. Not only is this unnecessary, it makes it harder to reason about. It also contributes to the verbosity as stated above.
-* Writing tests is unncessarily hard. Because we are reading and writing to the file system, we have to ensure those files 
+* Writing tests is unnecessarily hard. Because we are reading and writing to the file system, we have to ensure those files 
 exist and are writable before each test and are removed after.
 
 ## A Functional Implementation
@@ -245,9 +245,9 @@ functions are functions that given *x* input **always** return the same output, 
 
 Why are pure functions so important? Because they are:
 
-* easy to reason about, by subsituting a function call with the value it returns
+* easy to reason about, by substituting a function call with the value it returns
 * easy to test
-* faciliate function composition (as explained later)
+* facilitate function composition (as explained later)
 
 In our example code, `getActiveEmployees` and `makeEmployeeSummaryTable` are both *impure* because they rely on variables
 outside their scopes as input and output. Remember a pure function always *returns* its output based on its parameters, and given the same parameters always returns the same result. `getActiveEmployees`, besides for the fact that it doesn't take any
@@ -255,13 +255,13 @@ parameters can return a different result based on the value of `this.employees`,
 
 ### Immutability
 
-The second main characteristic of fp is immutablity. Immutability means *not* modifying variables in-place, or after they are initialized.  Like using pure functions, immutablity makes programs easier to reason about and thus less buggy. Immutability also lends itself to concurrency. It's easier to avoid race conditions if variables aren't man-handled in arbitrary locations.
+The second main characteristic of fp is immutability. Immutability means *not* modifying variables in-place, or after they are initialized.  Like using pure functions, immutability makes programs easier to reason about and thus less buggy. Immutability also lends itself to concurrency. It's easier to avoid race conditions if variables aren't man-handled in arbitrary locations.
 
 ### Composition over Inheritance
 
 In fp composition is used instead of inheritance. We specialize by plugging smaller functions together to make larger functions using pipelines to *transform* data. This is best illustrated by the Unix toolset, which is a collection of small, focused programs that can be strung together. Each program takes from `stdin` and outputs to `stdout`. Unix programs don't care about where they get their input from and where they dump their output.
 
-The power and flexibility of this paradigm comes when we combine these small programs together. For example, to get the first name in alphebetical order of a list of unordered names in a file:
+The power and flexibility of this paradigm comes when we combine these small programs together. For example, to get the first name in alphabetical order of a list of unordered names in a file:
 
 names.txt:
 ```
@@ -288,7 +288,7 @@ upper(exclaimed); // "GET OUT!"
 upper(exclaim("get out"));
 ```
 
-That's not as easy to read as Unix pipes, especially when piping together more than two functions. It's not imediately clear that there's a transformation of data, so instead we can use a `compose` function that clarifies this. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
+That's not as easy to read as Unix pipes, especially when piping together more than two functions. It's not immediately clear that there's a transformation of data, so instead we can use a `compose` function that clarifies this. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
 will do. `compose` takes any number of functions, starting at the right and passes each one's output to the function to the left. Ramda is an fp JavaScript utility library. Its `compose` function
 returns a new function that is a *composition* of all the passed functions:
 
@@ -415,7 +415,7 @@ compose(
 
 To output this data structure to CSV we need to simply join they array on new-lines (well, actually in production code you'd use
 a CSV library). Again, we can use the `join` function from Ramda, which takes the array we are working
-on as the last parameter. When composing, that last parameter is implicitely passed from the previous function in the pipeline. Let's add `join`:
+on as the last parameter. When composing, that last parameter is implicitly passed from the previous function in the pipeline. Let's add `join`:
 
 ```js
 const { compose, filter, join } = require("ramda");
@@ -457,7 +457,7 @@ const employeeTableFromFile = compose(
 );
 ```
 
-Now we have a function for returning the table from a file. Let's create another function for outputing CSV from that:
+Now we have a function for returning the table from a file. Let's create another function for outputting CSV from that:
 
 ```js
 ...
@@ -519,8 +519,8 @@ const employeeSummaryAsHTML = compose(
 We've accomplished addressing the deficiencies of the procedural style code we wrote at the beginning of the post. The
 functional implementation:
 
-1. is more concise, making it easier to quickly grasp and more likely to be correct. There is no unncessary fluff relating to classes etc. The code is declarative. It reads like a spec rather than a cryptic set of instructions.
+1. is more concise, making it easier to quickly grasp and more likely to be correct. There is no unnecessary fluff relating to classes etc. The code is declarative. It reads like a spec rather than a cryptic set of instructions.
 1. doesn't rely on or mutate variables outside each function's scope.
-1. is more modular. We can easily mix and match functions to achieve specialization instaed of using complex inheritance hierarchies.
+1. is more modular. We can easily mix and match functions to achieve specialization instead of using complex inheritance hierarchies.
 1. Writing tests is easy because we've walled off side-effects from the rest of the code. Asserting correct behavior
-of pure functions is way eaiser than checking side-effects.
+of pure functions is way easier than checking side-effects.
