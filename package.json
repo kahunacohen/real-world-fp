@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest src",
-    "prettier": "find ./src -name '*.js' -exec prettier --write {} +"
+    "prettier": "prettier --write src/employees.json && find ./src -name '*.js' -exec prettier --write {} +"
   },
   "author": "Aaron Cohen",
   "license": "ISC",

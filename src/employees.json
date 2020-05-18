@@ -1,6 +1,27 @@
 [
   {
     "active": true,
+    "socialSecurity": 587456322,
+    "firstName": "Mary",
+    "lastName": "Jane",
+    "pay": [
+      12083.33,
+      12083.33,
+      12083.33,
+      11000,
+      12102.24,
+      12083.33,
+      12083.33,
+      12083.33,
+      20076,
+      12083.33,
+      12083.33,
+      12083.33
+    ]
+  },
+  {
+    "active": true,
+    "socialSecurity": 165022588,
     "firstName": "John",
     "lastName": "Doe",
     "pay": [
@@ -20,31 +41,9 @@
   },
   {
     "active": false,
+    "socialSecurity": 203987899,
     "firstName": "Robert",
     "lastName": "Brown",
-    "pay": [
-      123,
-      100,
-      1234
-    ]
-  },
-  {
-    "active": true,
-    "firstName": "Mary",
-    "lastName": "Jane",
-    "pay": [
-      12083.33,
-      12083.33,
-      12083.33,
-      11000,
-      12102.24,
-      12083.33,
-      12083.33,
-      12083.33,
-      20076,
-      12083.33,
-      12083.33,
-      12083.33
-    ]
+    "pay": [123, 100, 1234]
   }
 ]

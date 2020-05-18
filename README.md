@@ -2,9 +2,9 @@
 
 Functional programming (fp) has gotten a lot of attention in the JavaScript community lately, mostly due to the visibility of [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
 
-But what is fp, and why should we program using it? In short, how can it make our life better? This series is for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore three important characteristics of functional programming, namely:
+But what is fp, and how can it make our programs better? This series is for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore three important characteristics of functional programming, namely:
 
-1. pure functions as primary building blocks
+1. pure functions as primary application building blocks
 1. immutability over mutability
 1. composition over inheritance
 
@@ -12,13 +12,34 @@ We'll implement a typical programming task in a an object-oriented, procedural s
 
 Let's imagine we have data in JSON representing employees. For now, we'll fetch it from a file. `employees.json`:
 
-```
+```json
 [
   {
+    "active": true,
+    "socialSecurity": 587456322,
+    "firstName": "Mary",
+    "lastName": "Jane",
+    "pay": [
+      12083.33,
+      12083.33,
+      12083.33,
+      11000,
+      12102.24,
+      12083.33,
+      12083.33,
+      12083.33,
+      20076,
+      12083.33,
+      12083.33,
+      12083.33
+    ]
+  },
+  {
+    "active": true,
+    "socialSecurity": 165022588,
     "firstName": "John",
     "lastName": "Doe",
-    "active": true,
-    "payments": [
+    "pay": [
       8333.33,
       8333.33,
       8333.33,
@@ -34,42 +55,21 @@ Let's imagine we have data in JSON representing employees. For now, we'll fetch 
     ]
   },
   {
-    "firstName": "Mary",
-    "lastName": "Jane",
-    "active": true,
-    "payments": [
-      12083.33,
-      12083.33,
-      12083.33,
-      11000,
-      12102.24,
-      12083.33,
-      12083.33,
-      12083.33,
-      20076,
-      12083.33,
-      12083.33,
-      12083.33
-    ]
+    "active": false,
+    "socialSecurity": 203987899,
+    "firstName": "Robert",
+    "lastName": "Brown",
+    "pay": [123, 100, 1234]
   }
 ]
-{
-  "firstName": "Robert",
-  "lastName": "Brown",
-  "active": false,
-  "payments": [
-    2300,
-    1900
-  ]
-}
 ```
+We would like to generate a file containing a CSV table with the sum of payments for the year for each employee. When imported
+into a spreadsheet program the CSV should render like this:
 
- We would like to generate a file containing a CSV table of each active employee and the total amount of paychecks for the year. The table should look like this when the output file is imported into a spreadsheet program:
-
-| Last Name  | First Name | Total Salary
-| ---------- | -----------| ------------
-| Doe        | John       |  97234.76
-| Jane       | Mary       | 151928.21
+| Last Name  | First Name | Social Security | Total Salary
+| ---------- | -----------| ----------------| ------------
+| Doe        | John       | xxx-xx-588      | 97234.76
+| Jane       | Mary       | xxx-xx-322      | 151928.21
 
 ## Prodedural/Object-Oriented Approach
 
