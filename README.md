@@ -63,8 +63,9 @@ Let's imagine we have data in JSON representing employees. For now, we'll fetch 
   }
 ]
 ```
-We would like to generate a file containing a CSV table with the sum of payments for the year for each employee. When imported
-into a spreadsheet program the CSV should render like this:
+We would like to generate a file containing a CSV table with the sum of payments for all *active* employess.
+The employees should be sorted by last name, and only the last four digits of the social security numbers should be
+shown. When imported into a spreadsheet program the CSV should render like this:
 
 | Last Name  | First Name | Social Security | Total Salary
 | ---------- | -----------| ----------------| ------------
