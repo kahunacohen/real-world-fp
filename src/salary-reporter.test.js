@@ -4,6 +4,7 @@ class SalaryReporter {
   constructor(path) {
     // Ignore possible JSON parse errors for now.
     this.employees = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
+    this.sortByLastName();
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
   }
   /**
@@ -13,7 +14,6 @@ class SalaryReporter {
   makeEmployeeSummaryTable() {
     // The first row of the return array are the headers
     let ret = [["Last Name", "First Name"]];
-
     // For each employee...
     for (let i = 0; i < this.employees.length; i++) {
       const employee = this.employees[i];
@@ -33,6 +33,17 @@ class SalaryReporter {
       }
     }
     return ret;
+  }
+  sortByLastName() {
+    this.employees = this.employees.sort((firstEl, secondEl) => {
+      if (firstEl.lastName < secondEl.lastName) {
+        return -1;
+      }
+      if (firstEl.lastName > secondEl.lastName) {
+        return 1;
+      }
+      return 0;
+    });
   }
   /**
    * @returns {String} - CSV string

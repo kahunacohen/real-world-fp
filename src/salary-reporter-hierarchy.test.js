@@ -4,7 +4,19 @@ class SalaryReporter {
   constructor(path) {
     // Ignore possible JSON parse errors for now.
     this.employees = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
+    this.sortByLastName();
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
+  }
+  sortByLastName() {
+    this.employees = this.employees.sort((firstEl, secondEl) => {
+      if (firstEl.lastName < secondEl.lastName) {
+        return -1;
+      }
+      if (firstEl.lastName > secondEl.lastName) {
+        return 1;
+      }
+      return 0;
+    });
   }
   /**
    * @returns {Array} - A 2 dim array, with each sub array representing a row
