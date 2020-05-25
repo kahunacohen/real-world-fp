@@ -1,8 +1,8 @@
-# Functional Programming for Smarties (part 1)
+# The Very Basics of Functional Programming (part 1)
 
-Functional programming (fp) has gotten a lot of attention in the JavaScript community lately, mostly due to the visibility of [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
+Functional programming (fp) is getting a lot of attention in the JavaScript community, due to the visibility of projects such as [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
 
-But what is fp, and how can it make our programs better? This series is for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore three important characteristics of functional programming, namely:
+But what is fp, and how can it make our programs better? This series is for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore the three most important aspects of functional programming, namely:
 
 1. pure functions as primary application building blocks
 1. immutability over mutability
@@ -63,9 +63,9 @@ Let's imagine we have data in JSON representing employees. For now, we'll fetch 
   }
 ]
 ```
-We would like to generate a file containing a CSV table with the sum of payments for all *active* employess.
-The employees should be sorted by last name, and only the last four digits of the social security numbers should be
-shown. When imported into a spreadsheet program the CSV should render like this:
+We would like to generate a file containing a CSV table with the sum of payments for all *active* employees.
+The employees should be sorted by last name, and any instance of a social security number should be
+censored. When imported into a spreadsheet program the CSV should render like this:
 
 | Last Name  | First Name | Social Security | Total Salary
 | ---------- | -----------| ----------------| ------------
