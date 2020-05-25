@@ -1,7 +1,7 @@
 [
   {
     "active": true,
-    "socialSecurity": 587456322,
+    "socialSecurity": "587-45-6322",
     "firstName": "Mary",
     "lastName": "Jane",
     "pay": [
@@ -21,7 +21,7 @@
   },
   {
     "active": true,
-    "socialSecurity": 165022588,
+    "socialSecurity": "165-02-2588",
     "firstName": "John",
     "lastName": "Doe",
     "pay": [
@@ -41,7 +41,7 @@
   },
   {
     "active": false,
-    "socialSecurity": 203987899,
+    "socialSecurity": "203-98-7899",
     "firstName": "Robert",
     "lastName": "Brown",
     "pay": [123, 100, 1234]

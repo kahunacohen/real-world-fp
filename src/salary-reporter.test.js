@@ -13,7 +13,7 @@ class SalaryReporter {
    */
   makeEmployeeSummaryTable() {
     // The first row of the return array are the headers
-    let ret = [["Last Name", "First Name", "Total Salary"]];
+    let ret = [["Last Name", "First Name", "Social Security", "Total Salary"]];
     // For each employee...
     for (let i = 0; i < this.employees.length; i++) {
       const employee = this.employees[i];
@@ -28,7 +28,12 @@ class SalaryReporter {
         }
 
         // Add a row with the employee's info, including total salary
-        let row = [employee.lastName, employee.firstName, employeeTotal];
+        let row = [
+          employee.lastName,
+          employee.firstName,
+          employee.socialSecurity,
+          employeeTotal,
+        ];
         ret.push(row);
       }
     }
@@ -72,7 +77,7 @@ describe("monolithic SalaryReporter", () => {
       const reporter = new SalaryReporter(`${__dirname}/employees.json`);
       reporter.report(outPath);
       expect(fs.readFileSync(outPath, { encoding: "utf-8" })).toEqual(
-        "Last Name,First Name,Total Salary\nDoe,John,97234.76\nJane,Mary,151928.21"
+        "Last Name,First Name,Social Security,Total Salary\nDoe,John,165-02-2588,97234.76\nJane,Mary,587-45-6322,151928.21"
       );
     });
   });
