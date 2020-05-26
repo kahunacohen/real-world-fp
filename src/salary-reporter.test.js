@@ -50,10 +50,27 @@ class SalaryReporter {
       return 0;
     });
   }
+  censor() {
+    let ret = [this.employeeSummaryTable[0]];
+    for (const row of this.employeeSummaryTable.slice(1)) {
+      let censoredRow = [];
+      for (const data of row) {
+        const censoredData = data
+          .toString()
+          .replace(/\d{3}-\d{2}-(\d{4})/, (_, lastFour) => {
+            return `xxx-xx-${lastFour}`;
+          });
+        censoredRow.push(censoredData);
+      }
+      ret.push(censoredRow);
+    }
+    this.employeeSummaryTable = ret;
+  }
   /**
    * @returns {String} - CSV string
    */
   report(path) {
+    this.censor();
     fs.writeFileSync(path, this.employeeSummaryTable.join("\n"), {
       encoding: "utf-8",
     });
@@ -77,7 +94,7 @@ describe("monolithic SalaryReporter", () => {
       const reporter = new SalaryReporter(`${__dirname}/employees.json`);
       reporter.report(outPath);
       expect(fs.readFileSync(outPath, { encoding: "utf-8" })).toEqual(
-        "Last Name,First Name,Social Security,Total Salary\nDoe,John,165-02-2588,97234.76\nJane,Mary,587-45-6322,151928.21"
+        "Last Name,First Name,Social Security,Total Salary\nDoe,John,xxx-xx-2588,97234.76\nJane,Mary,xxx-xx-6322,151928.21"
       );
     });
   });
