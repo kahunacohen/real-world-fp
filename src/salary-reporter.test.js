@@ -4,8 +4,47 @@ class SalaryReporter {
   constructor(path) {
     // Ignore possible JSON parse errors for now.
     this.employees = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
+    this.filterByActive();
     this.sortByLastName();
+    this.censor();
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
+  }
+  filterByActive() {
+    let ret = [];
+    for (let empl of this.employees) {
+      if (empl.active) {
+        ret.push(empl);
+      }
+    }
+    this.employees = ret;
+  }
+  sortByLastName() {
+    this.employees = this.employees.sort((firstEl, secondEl) => {
+      if (firstEl.lastName < secondEl.lastName) {
+        return -1;
+      }
+      if (firstEl.lastName > secondEl.lastName) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+  censor() {
+    let ret = [];
+    for (const empl of this.employees) {
+      for (const field in empl) {
+        if (typeof empl[field] === "string") {
+          empl[field] = empl[field].replace(
+            /\d{3}-\d{2}-(\d{4})/,
+            (_, lastFour) => {
+              return `xxx-xx-${lastFour}`;
+            }
+          );
+        }
+      }
+      ret.push(empl);
+    }
+    this.employees = ret;
   }
   /**
    * @returns {Array} - A 2 dim array, with each sub array representing a row
@@ -39,38 +78,10 @@ class SalaryReporter {
     }
     return ret;
   }
-  sortByLastName() {
-    this.employees = this.employees.sort((firstEl, secondEl) => {
-      if (firstEl.lastName < secondEl.lastName) {
-        return -1;
-      }
-      if (firstEl.lastName > secondEl.lastName) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-  censor() {
-    let ret = [this.employeeSummaryTable[0]];
-    for (const row of this.employeeSummaryTable.slice(1)) {
-      let censoredRow = [];
-      for (const data of row) {
-        const censoredData = data
-          .toString()
-          .replace(/\d{3}-\d{2}-(\d{4})/, (_, lastFour) => {
-            return `xxx-xx-${lastFour}`;
-          });
-        censoredRow.push(censoredData);
-      }
-      ret.push(censoredRow);
-    }
-    this.employeeSummaryTable = ret;
-  }
   /**
    * @returns {String} - CSV string
    */
   report(path) {
-    this.censor();
     fs.writeFileSync(path, this.employeeSummaryTable.join("\n"), {
       encoding: "utf-8",
     });
