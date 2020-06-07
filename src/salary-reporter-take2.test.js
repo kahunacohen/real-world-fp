@@ -24,8 +24,8 @@ const JSONtoTable = (employees) => {
     employees.map((x) => [
       x.lastName,
       x.firstName,
-      x.pay.reduce((acc, curr) => acc + curr),
       x.socialSecurity,
+      x.pay.reduce((acc, curr) => acc + curr),
     ])
   );
 };
@@ -76,12 +76,14 @@ describe("employees", () => {
   });
   it("toCSV", () => {
     expect(employeesToCSV(employeesStr)).toEqual(
-      "Last Name,First Name,Total Pay,Social Security Number\nDoe,John,97234.76,xxx-xx-2588\nJane,Mary,151928.21,xxx-xx-6322"
+      "Last Name,First Name,Total Pay,Social Security Number\nDoe,John,xxx-xx-2588,97234.76\nJane,Mary,xxx-xx-6322,151928.21"
     );
   });
   it("toHTML", () => {
-    expect(employeesToHTML(employeesStr)).toContain(
-      "<tr><td>Doe</td><td>John</td><td>97234.76</td><td>xxx-xx-2588</td></tr><tr><td>Jane</td><td>Mary</td><td>151928.21</td><td>xxx-xx-6322</td></tr>"
+    expect(employeesToHTML(employeesStr)).toEqual(
+      expect.stringContaining(
+        "<tr><td>Doe</td><td>John</td><td>xxx-xx-2588</td><td>97234.76</td></tr><tr><td>Jane</td><td>Mary</td><td>xxx-xx-6322</td><td>151928.21</td></tr>"
+      )
     );
   });
 });
