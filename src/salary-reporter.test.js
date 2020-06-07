@@ -199,24 +199,81 @@ class SalaryCSVReporter extends BaseSalaryReporter {
   }
 }
 
+class SalaryHTMLReporter extends BaseSalaryReporter {
+  report(path) {
+    const date = new Date();
+    const headerRow =
+      "<tr>" +
+      this.employeeSummaryTable[0]
+        .map((heading) => `<th>${heading}</th>`)
+        .join("") +
+      "</tr>";
+
+    const dataRows = this.employeeSummaryTable
+      .slice(1) // Everything but the first row
+      .map((row) => {
+        const cells = row.map((data) => `<td>${data}</td>`).join("");
+        return `<tr>${cells}</tr>`;
+      })
+      .join("");
+
+    const html = `<html>
+      <head>
+        <title>Employee Report: ${date}</title>
+      </head>
+      <body>
+        <table>
+          <thead>
+            ${headerRow}
+          </thead>
+          <tbody>
+            ${dataRows}
+          </tbody>
+        </table>
+      </body>
+    </html>`;
+    fs.writeFileSync(path, html, { encoding: "utf-8" });
+  }
+}
+
 describe("Hierachal SalaryReporter", () => {
-  const outPath = `${__dirname}/employees.csv`;
+  const outPathCSV = `${__dirname}/employees.csv`;
+  const outPathHTML = `${__dirname}/employees.html`;
+
   beforeEach(() => {
-    if (fs.existsSync(outPath)) {
-      fs.unlinkSync(outPath);
+    if (fs.existsSync(outPathCSV)) {
+      fs.unlinkSync(outPathCSV);
+    }
+    if (fs.existsSync(outPathHTML)) {
+      fs.unlinkSync(outPathHTML);
     }
   });
   afterEach(() => {
-    if (fs.existsSync(outPath)) {
-      fs.unlinkSync(outPath);
+    if (fs.existsSync(outPathCSV)) {
+      fs.unlinkSync(outPathCSV);
+    }
+    if (fs.existsSync(outPathHTML)) {
+      fs.unlinkSync(outPathHTML);
     }
   });
   describe("SalaryCSVReporter", () => {
     it("outputs CSV", () => {
       const reporter = new SalaryCSVReporter(`${__dirname}/employees.json`);
-      reporter.report(outPath);
-      expect(fs.readFileSync(outPath, { encoding: "utf-8" })).toEqual(
+      reporter.report(outPathCSV);
+      expect(fs.readFileSync(outPathCSV, { encoding: "utf-8" })).toEqual(
         "Last Name,First Name,Social Security,Total Salary\nDoe,John,xxx-xx-2588,97234.76\nJane,Mary,xxx-xx-6322,151928.21"
+      );
+    });
+  });
+  describe("SalaryHTMLReporter", () => {
+    it("outputs HTML", () => {
+      const reporter = new SalaryHTMLReporter(`${__dirname}/employees.json`);
+      reporter.report(outPathHTML);
+      // In real life we should parse using a DOM parser and assert.
+      expect(fs.readFileSync(outPathHTML, { encoding: "utf-8" })).toEqual(
+        expect.stringContaining(
+          "<tr><td>Doe</td><td>John</td><td>xxx-xx-2588</td><td>97234.76</td></tr><tr><td>Jane</td><td>Mary</td><td>xxx-xx-6322</td><td>151928.21</td></tr>"
+        )
       );
     });
   });
