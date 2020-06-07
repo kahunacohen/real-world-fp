@@ -1,10 +1,11 @@
 # The Very Basics of Functional Programming (part 1)
 
-Functional programming (fp) is getting a lot of attention in the JavaScript community, due to the visibility of projects such as [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
+Functional programming (fp) is getting a lot of attention in the JavaScript community, due to the visibility of libraries such as [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
 
-But what is fp, and how can it make our programs better? This series is for intermediate JavaScript programmers, and/or those with limited functional programming experience. In the first part, I'll explore the three most important aspects of functional programming, namely:
+But what is fp, how does it differ from typical object oriented programs, and how can it make our programs better? Although
+fp can be a complex topic, this post will attempt to distil it to three essential points:
 
-1. pure functions as primary application building blocks
+1. pure functions over side-effects
 1. immutability over mutability
 1. composition over inheritance
 
@@ -63,7 +64,7 @@ Let's imagine we have data in JSON representing employees. For now, we'll fetch 
   }
 ]
 ```
-We would like to generate a file containing a CSV table with the sum of payments for all *active* employees.
+We would like to generate a file containing a CSV table with the sum of payments for *active* employees.
 The employees should be sorted by last name, and any instance of a social security number should be
 censored. When imported into a spreadsheet program the CSV should render like this:
 
