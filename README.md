@@ -480,21 +480,40 @@ Sort by last name
 <br>
 Report as CSV/HTML
 
-```js
-const fs = require("fs");
+### Censor Social Security Numbers
 
-const readFile = (path) => fs.readFileSync(path, {encoding: "utf-8"});
-```
-### Parsing the JSON String
-
-Our next step is parsing the string from our data source to JSON. We don't need to write that function. It already exists: `JSON.parse`. Let's start composing what we have so far:
+This is pretty simple. We just break out what we had into a separate function:
 
 ```js
-compose(
-  JSON.parse,
-  readFile(`${__dirname}/employees.json`)
-);
+const censor = (s) =>
+  s.replace(/\d{3}-\d{2}-(\d{4})/g, (_, lastFour) => `xxx-xx-${lastFour}`);
 ```
+ We are using `replace` on the string, passing a function instead of a replacement string. The function
+ grabs the captured last four digits of the social security number.
+ 
+Because it's a small function that only does one thing and because it's pure, imagine how easy it would be to test this in isolation from the rest of the program. There's no setup/teardown and easy to assert against such simple behavior.
+
+<strike>Read JSON string</strike>
+<br>
+↓
+<br>
+<strike>Censor social security numbers</strike>
+<br>
+↓
+<br>
+Parse JSON
+<br>
+↓
+<br>
+Filter out inactive employees
+<br>
+↓
+<br>
+Sort by last name
+<br>
+↓
+<br>
+Report as CSV/HTML
 
 ### Filtering for active employees
 
