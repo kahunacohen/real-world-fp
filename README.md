@@ -424,13 +424,21 @@ possible.
 
 ## A Functional Implementation
 
-OK, with the theory out of the way, now we're ready to refactor. Let's start, for now, by avoiding the cruft of classes and work with plain old functions. If we need to remember state, we'll consider using classes later.
+With some theory out of the way, we're ready to refactor. Let's start, for now, by avoiding the cruft of classes and work with plain old functions. If we need to remember state, we'll consider using classes later, but only then.
 
-Our strategy is to create a new function that strings together simple functions together in a pipeline, each one consuming the output of the and feeding its output to the next one:
+Our strategy is to create a new function that strings together simple functions together in a pipeline, each one consuming the output of the and feeding its output to the next one. This is how we want to think about it:
 
-```
-Read JSON string > JSON.parse > filter for active employees > make tabular data structure > make CSV/HTML table > print to screen | write to file etc.
-```
+Read JSON string
+↓
+Censor social security numbers
+↓
+Parse JSON
+↓
+Filter out inactive employees
+↓
+Sort by last name
+↓
+Report as CSV/HTML
 
 ### Getting the JSON String
 
