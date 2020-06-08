@@ -522,8 +522,9 @@ Hey, how simple can you get? We already have a function for this, and we don't e
 Let's start to compose what we have together now:
 
 ```js
-const { compose } from "ramda";
-
+...
+// The caller reads the string from `employees.json` and passes it to
+// parseEmployees.
 const parseEmployees = compose(JSON.parse, censor);
 ```
 
@@ -554,39 +555,50 @@ Report as CSV/HTML
 
 ### Filtering for active employees
 
-Next, we want to filter out inactive employees, which we can do easily with the higher order function,
-`Array.filter`. Let's try to add `filter` to our composition: 
+Next, we want to filter out inactive employees, which we can do so easily using the higher order function (HOF),
+`Array.filter`. This is so concise we don't even feel compelled to create a name function for it (at least not yet).
+However, we have to import `filter` from ramda because `Array.filter` is called on the array and takes a callback as a parameter.
+
+The version of `filter` in ramda makes composition possible by taking two arguments, the callback and the array to filter.
+The funny thing is that if you pass it only one argument (e.g. the callback), it returns a function that returns the rest of
+the arguments (the array). So we can invoke it in the composition with the callback and it will implicitely accept the array. This is called currying/partial application. We'll discuss this more in a future post: 
 
 ```js
+const { compose, filter } from "ramda";
+
 ...
-compose(
-  filter((empl) => empl.active)
+const parseEmployees = compose(
+  filter(employee => employee.active),
   JSON.parse,
-  readFile(`${__dirname}/employees.json`)
+  censor
 );
 ```
+Are you starting to see how declarative this is? Our function definition tells us exactly what's going on, without spilling
+all the gory details.
 
-This, will of course, fail because `filter` is a method on `Array`s prototype. We need `filter`
-to take the data we are working on as a parameter. As a convenience, Ramda includes a number of higher order `Array`
-methods, including `filter`, `map` etc. that take the data as the last argument, allowing us to
-compose them. So, now are composition looks like this:
+<strike>Read JSON string</strike>
+<br>
+↓
+<br>
+<strike>Censor social security numbers</strike>
+<br>
+↓
+<br>
+<strike>Parse JSON</strike>
+<br>
+↓
+<br>
+<strike>Filter out inactive employees</strike>
+<br>
+↓
+<br>
+Sort by last name
+<br>
+↓
+<br>
+Report as CSV/HTML
 
-```js
-const fs = require("fs");
-const { compose, filter } = require("ramda");
 
-compose(
-  filter(empl => empl.active)
-  JSON.parse,
-  readFile(`${__dirname}/employees.json`)
-);
-```
-
-Are you seeing how declarative this is? Our function definition tells us exactly what's going on here: 
-
-1. We read string in from a file
-2. parse it to JSON
-3. filter active employees etc.
 
 ### Making the Tabular Data Structure
 
