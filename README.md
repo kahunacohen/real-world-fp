@@ -333,21 +333,34 @@ Now let's fix these issues by applying the basic characteristics of fp we mentio
 
 ### Pure Functions as Primary Building Blocks
 
-In general, fp emphasizes plain old functions as first-class citizens and the core building blocks of programs. We pass functions to other functions and avoid classes unless absolutely necessary. In other
-words, we start with functions and use classes only if we have a good reason to do so so.
+fp emphasizes plain old functions as first-class citizens and the core building blocks of programs. We pass functions to other functions and avoid classes unless absolutely necessary.
 
-In fp we try to program not only with functions as much as possible, but also with *pure* functions. Pure
-functions are functions that given *x* input **always** return the same output, *y*. Pure functions also avoid side-effects which we'll come back to in a later post.
+We try to program, not only with functions as much as possible, but also with *pure* functions. Pure
+functions are functions that given *x* input **always** return the same output, *y*. Pure functions also avoid side-effects which we'll come back to in a later post. This is a pure function:
 
-Why are pure functions so important? Because they are:
+```js
+function sum(x, y) {
+  return x + y;
+}
+```
+Given `x=1` and `y=2`, `sum` will *always* return `3`.
 
-* easy to reason about, by substituting a function call with the value it returns
-* easy to test
+This function is impure:
+
+```js
+let x = 0;
+function increment() {
+  return x++;
+}
+```
+
+`increment`'s return value is dependent on the context of a variable outside its scope. What if someone or something else changes `x`? There are many other examples of impure functions in the wild including functions that write to the file system, connect to network resources, throw exceptions etc.
+
+Why are pure functions so important? Because they:
+
+* are easy to reason about. By substituting a function call with the value it returns, we can easily determine the behavior of the system.
+* are easy to test
 * facilitate function composition (as explained later)
-
-In our example code, `getActiveEmployees` and `makeEmployeeSummaryTable` are both *impure* because they rely on variables
-outside their scopes as input and output. Remember a pure function always *returns* its output based on its parameters, and given the same parameters always returns the same result. `getActiveEmployees`, besides for the fact that it doesn't take any
-parameters can return a different result based on the value of `this.employees`, which is set outside its context.
 
 ### Immutability
 
@@ -355,7 +368,10 @@ The second main characteristic of fp is immutability. Immutability means *not* m
 
 ### Composition over Inheritance
 
-In fp composition is used instead of inheritance. We specialize by plugging smaller functions together to make larger functions using pipelines to *transform* data. This is best illustrated by the Unix toolset, which is a collection of small, focused programs that can be strung together. Each program takes from `stdin` and outputs to `stdout`. Unix programs don't care about where they get their input from and where they dump their output.
+In fp composition is used instead of inheritance. We specialize behavior by plugging smaller functions together in different
+wayts to make larger functions using data pipelines.
+
+This is best illustrated by the Unix toolset, which is a collection of small, focused programs that can be strung together. Each program takes from `stdin` and outputs to `stdout`. Unix programs don't care about where they get their input from and where they dump their output.
 
 The power and flexibility of this paradigm comes when we combine these small programs together. For example, to get the first name in alphabetical order of a list of unordered names in a file:
 
@@ -371,7 +387,7 @@ $ cat names.txt | sort | head -n 1
 ```
 sends `Cohen` to `stdout`.
 
-So, functional composition is simply using the output of one function as the input for another. We use this all the time, in the form of intermediate variables or nested invocations:
+So, functional composition is simply using the output of one function as the input for another. We actually do this all the time, in the form of intermediate variables or nested invocations:
 
 ```js
 const exclaim = s => `${s}!`;
@@ -384,9 +400,10 @@ upper(exclaimed); // "GET OUT!"
 upper(exclaim("get out"));
 ```
 
-That's not as easy to read as Unix pipes, especially when piping together more than two functions. It's not immediately clear that there's a transformation of data, so instead we can use a `compose` function that clarifies this. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
-will do. `compose` takes any number of functions, starting at the right and passes each one's output to the function to the left. Ramda is an fp JavaScript utility library. Its `compose` function
-returns a new function that is a *composition* of all the passed functions:
+But that's not as obvious as Unix pipes, especially when piping together more than two functions. It's not immediately clear that there's a transformation of data, so instead we can leverage a `compose` function that makes this clerer. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
+will do. 
+
+`compose` takes any number of functions, starting at the right and passes each one's output to the function to the left. Ramda is an fp JavaScript utility library. `compose` returns a new function that is a *composition* of all the passed functions. So instead of the above, we can do this:
 
 ```js
 import { compose } from "ramda";
@@ -399,6 +416,7 @@ const upper = s => s.toUpperCase();
 const yell = compose(upper, exclaim);
 yell("get out") // "GET OUT!"
 ```
+`yell` receives a string, appends an exlaimation point, then passes that returned string to `upper` which makes it all uppercase.
 
 There's more to function composition than this, but these are the basics. It allows you to write small, focused functions
 to build larger functions. The fact that `exclaim` and `upper` are pure functions makes this composition
