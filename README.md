@@ -515,6 +515,43 @@ Sort by last name
 <br>
 Report as CSV/HTML
 
+### Parse JSON
+Hey, how simple can you get? We already have a function for this, and we don't even have to write it. It's called:
+`JSON.parse`.
+
+Let's start to compose what we have together now:
+
+```js
+const { compose } from "ramda";
+
+const parseEmployees = compose(JSON.parse, censor);
+```
+
+We should now be able to read the JSON file and pass the string to `parseEmployees`, getting back an employee object
+with all social security numbers censored.
+
+<strike>Read JSON string</strike>
+<br>
+↓
+<br>
+<strike>Censor social security numbers</strike>
+<br>
+↓
+<br>
+<strike>Parse JSON</strike>
+<br>
+↓
+<br>
+Filter out inactive employees
+<br>
+↓
+<br>
+Sort by last name
+<br>
+↓
+<br>
+Report as CSV/HTML
+
 ### Filtering for active employees
 
 Next, we want to filter out inactive employees, which we can do easily with the higher order function,
