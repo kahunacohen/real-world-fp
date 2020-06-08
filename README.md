@@ -75,7 +75,7 @@ censored. When imported into a spreadsheet program the CSV should render like so
 | Doe        | John       | xxx-xx-588      | 97234.76
 | Jane       | Mary       | xxx-xx-322      | 151928.21
 
-## Prodedural/Object-Oriented Approach
+## Prodedural/Object-Oriented, Monolithic Approach
 
 I'll implement this using a somewhat naive object-oriented, procerdual approach. Note that the code we'll develop will 
 read like step-by-step instructions (procedural) and will modify instance variables in-place.
@@ -171,17 +171,63 @@ class SalaryReporter {
   }
 }
 ```
+A few notes. This implementation:
 
-Now we've been asked to also generate an HTML report. We could create a hierarchy of `SalaryReporter` classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and the HTML reporter. We just extracted out the `report` method:
+* performs side effects, namely reading and writing input and output files
+* performs multiple mutations on an instance variable (`this.employees`) after it is first parsed from JSON. It then
+reads this data structure to create a two-dimensional array of data that the `report` method uses to generate a CSV table.
+
+## A Hierarchical Approach
+Now, imagine, we've been asked to also generate an HTML report. A common approach is to create a hierarchy of `SalaryReporter` classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and an HTML reporter. We just extracted out the `report` method. Here's the base class:
 
 ```js
 const fs = require("fs");
 
-class SalaryReporter {
+class BaseSalaryReporter {
   constructor(path) {
     // Ignore possible JSON parse errors for now.
     this.employees = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
+    this.filterByActive();
+    this.sortByLastName();
+    this.censor();
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
+  }
+  filterByActive() {
+    let ret = [];
+    for (let empl of this.employees) {
+      if (empl.active) {
+        ret.push(empl);
+      }
+    }
+    this.employees = ret;
+  }
+  sortByLastName() {
+    this.employees = this.employees.sort((firstEl, secondEl) => {
+      if (firstEl.lastName < secondEl.lastName) {
+        return -1;
+      }
+      if (firstEl.lastName > secondEl.lastName) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+  censor() {
+    let ret = [];
+    for (const empl of this.employees) {
+      for (const field in empl) {
+        if (typeof empl[field] === "string") {
+          empl[field] = empl[field].replace(
+            /\d{3}-\d{2}-(\d{4})/,
+            (_, lastFour) => {
+              return `xxx-xx-${lastFour}`;
+            }
+          );
+        }
+      }
+      ret.push(empl);
+    }
+    this.employees = ret;
   }
   /**
    * @returns {Array} - A 2 dim array, with each sub array representing a row
@@ -189,8 +235,7 @@ class SalaryReporter {
    */
   makeEmployeeSummaryTable() {
     // The first row of the return array are the headers
-    let ret = [["Last Name", "First Name"]];
-
+    let ret = [["Last Name", "First Name", "Social Security", "Total Salary"]];
     // For each employee...
     for (let i = 0; i < this.employees.length; i++) {
       const employee = this.employees[i];
@@ -205,7 +250,12 @@ class SalaryReporter {
         }
 
         // Add a row with the employee's info, including total salary
-        let row = [employee.lastName, employee.firstName, employeeTotal];
+        let row = [
+          employee.lastName,
+          employee.firstName,
+          employee.socialSecurity,
+          employeeTotal,
+        ];
         ret.push(row);
       }
     }
