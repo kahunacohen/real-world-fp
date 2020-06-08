@@ -556,12 +556,12 @@ Report as CSV/HTML
 ### Filtering for active employees
 
 Next, we want to filter out inactive employees, which we can do so easily using the higher order function (HOF),
-`Array.filter`. This is so concise we don't even feel compelled to create a name function for it (at least not yet).
-However, we have to import `filter` from ramda because `Array.filter` is called on the array and takes a callback as a parameter.
+`Array.filter`. An HOF is a function that takes a function as an argument. Most of these in JavaScript, like `Array.filter`, `Array.map` etc. are pure. For example, they return new arrays without mutating any variables.
 
-The version of `filter` in ramda makes composition possible by taking two arguments, the callback and the array to filter.
-The funny thing is that if you pass it only one argument (e.g. the callback), it returns a function that returns the rest of
-the arguments (the array). So we can invoke it in the composition with the callback and it will implicitely accept the array. This is called currying/partial application. We'll discuss this more in a future post: 
+Our filter implementation is so clear, we don't even feel compelled to create a name function for it (at least not yet).
+However, we have to import `filter` from ramda because `Array.filter` is called on the array and takes a callback as a parameter. The version of `filter` in ramda makes composition possible by taking two arguments, the callback and the array to filter.
+
+The interesting thing about Ramda's `filter` is that if you pass it only one argument (e.g. the callback), it returns a function that receives the rest of the arguments (the array). Because passing it only one argument returns a function, we can *invoke* it in the composition with the callback and it will return a function that implicitely accepts the array. This is called currying/partial application. We'll discuss this more in a future post: 
 
 ```js
 const { compose, filter } from "ramda";
