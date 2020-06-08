@@ -1,9 +1,11 @@
-# The Very Basics of Functional Programming (part 1)
+# Functional Programming for Beginners (part 1)
+
+This post is aimed toward beginning to intermediate JavaScript developers with a few years of experience under their belt.
 
 Functional programming (fp) is getting a lot of attention in the JavaScript community, due to the visibility of libraries such as [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
 
 But what is fp, how does it differ from typical object oriented programs, and how can it make our programs better? Although
-fp can be a complex topic, this post will attempt to distil it to three essential points:
+fp can be a complex topic, we'll simplify and discuss three main characteristics of fp:
 
 1. pure functions over side-effects
 1. immutability over mutability
@@ -17,7 +19,7 @@ Let's imagine we have data in JSON representing employees. For now, we'll fetch 
 [
   {
     "active": true,
-    "socialSecurity": 587456322,
+    "socialSecurity": "587-45-6322",
     "firstName": "Mary",
     "lastName": "Jane",
     "pay": [
@@ -37,7 +39,7 @@ Let's imagine we have data in JSON representing employees. For now, we'll fetch 
   },
   {
     "active": true,
-    "socialSecurity": 165022588,
+    "socialSecurity": "165-02-2588",
     "firstName": "John",
     "lastName": "Doe",
     "pay": [
@@ -57,7 +59,7 @@ Let's imagine we have data in JSON representing employees. For now, we'll fetch 
   },
   {
     "active": false,
-    "socialSecurity": 203987899,
+    "socialSecurity": "203-98-7899",
     "firstName": "Robert",
     "lastName": "Brown",
     "pay": [123, 100, 1234]
@@ -66,7 +68,7 @@ Let's imagine we have data in JSON representing employees. For now, we'll fetch 
 ```
 We would like to generate a file containing a CSV table with the sum of payments for *active* employees.
 The employees should be sorted by last name, and any instance of a social security number should be
-censored. When imported into a spreadsheet program the CSV should render like this:
+censored. When imported into a spreadsheet program the CSV should render like so:
 
 | Last Name  | First Name | Social Security | Total Salary
 | ---------- | -----------| ----------------| ------------
@@ -75,7 +77,8 @@ censored. When imported into a spreadsheet program the CSV should render like th
 
 ## Prodedural/Object-Oriented Approach
 
-We might start with a class like this:
+I'll implement this using a somewhat naive object-oriented, procerdual approach. Note that the code we'll develop will 
+read like step-by-step instructions (procedural) and will modify instance variables in-place.
 
 ```js
 const fs = require("fs");
@@ -84,7 +87,47 @@ class SalaryReporter {
   constructor(path) {
     // Ignore possible JSON parse errors for now.
     this.employees = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
+    this.filterByActive();
+    this.sortByLastName();
+    this.censor();
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
+  }
+  filterByActive() {
+    let ret = [];
+    for (let empl of this.employees) {
+      if (empl.active) {
+        ret.push(empl);
+      }
+    }
+    this.employees = ret;
+  }
+  sortByLastName() {
+    this.employees = this.employees.sort((firstEl, secondEl) => {
+      if (firstEl.lastName < secondEl.lastName) {
+        return -1;
+      }
+      if (firstEl.lastName > secondEl.lastName) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+  censor() {
+    let ret = [];
+    for (const empl of this.employees) {
+      for (const field in empl) {
+        if (typeof empl[field] === "string") {
+          empl[field] = empl[field].replace(
+            /\d{3}-\d{2}-(\d{4})/,
+            (_, lastFour) => {
+              return `xxx-xx-${lastFour}`;
+            }
+          );
+        }
+      }
+      ret.push(empl);
+    }
+    this.employees = ret;
   }
   /**
    * @returns {Array} - A 2 dim array, with each sub array representing a row
@@ -92,8 +135,7 @@ class SalaryReporter {
    */
   makeEmployeeSummaryTable() {
     // The first row of the return array are the headers
-    let ret = [["Last Name", "First Name"]];
-
+    let ret = [["Last Name", "First Name", "Social Security", "Total Salary"]];
     // For each employee...
     for (let i = 0; i < this.employees.length; i++) {
       const employee = this.employees[i];
@@ -108,7 +150,12 @@ class SalaryReporter {
         }
 
         // Add a row with the employee's info, including total salary
-        let row = [employee.lastName, employee.firstName, employeeTotal];
+        let row = [
+          employee.lastName,
+          employee.firstName,
+          employee.socialSecurity,
+          employeeTotal,
+        ];
         ret.push(row);
       }
     }
