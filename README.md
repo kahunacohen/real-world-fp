@@ -450,10 +450,35 @@ Sort by last name
 <br>
 Report as CSV/HTML
 
-### Getting the JSON String
+### Read the JSON String
 
-We already have a function for this, `fs.readFileSync`, but it's a bit clumsy. Let's clean it up for
-our purposes:
+We're going to punt here? Why? Because reading the JSON is impure: we have to read from the file system. Of course
+impurity is a large part of real-world programming. At some point we have to reach out into the world and affect it.
+
+The point of fp isn't to avoid impurity, rather to isolate it and move it to the periphery of your program logic. In this
+case we can assume the caller of our function will get the raw, employee data. We can assume that `fs.readFileSync` is vetted and welltested by the core Nodejs team. Now we will be able to test our program without having the setup/teardown cruft that's required when reading and writing to the filesystem.
+
+<strike>Read JSON string</strike>
+<br>
+↓
+<br>
+Censor social security numbers
+<br>
+↓
+<br>
+Parse JSON
+<br>
+↓
+<br>
+Filter out inactive employees
+<br>
+↓
+<br>
+Sort by last name
+<br>
+↓
+<br>
+Report as CSV/HTML
 
 ```js
 const fs = require("fs");
