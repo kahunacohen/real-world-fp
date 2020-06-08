@@ -281,7 +281,7 @@ Now the HTML reporter. We'll, again, subclass `SalaryReporter`, overriding the `
 
 ```js
 ...
-class SalaryHTMLReporter extends SalaryReporter {
+class SalaryHTMLReporter extends BaseSalaryReporter {
   report(path) {
     const date = new Date();
     const headerRow =
@@ -300,39 +300,36 @@ class SalaryHTMLReporter extends SalaryReporter {
       .join("");
 
     const html = `<html>
-    <head>
-      <title>Employee Report: ${date}</title>
-    </head>
-    <body>
-      <table>
-        <thead>
-          ${headerRow}
-        </thead>
-        <tbody>
-          ${dataRows}
-        </tbody>
-      </table>
-    </body>
-  </html>`;
+      <head>
+        <title>Employee Report: ${date}</title>
+      </head>
+      <body>
+        <table>
+          <thead>
+            ${headerRow}
+          </thead>
+          <tbody>
+            ${dataRows}
+          </tbody>
+        </table>
+      </body>
+    </html>`;
     fs.writeFileSync(path, html, { encoding: "utf-8" });
   }
 }
 ```
+This is kind of better. Now when we need a new kind of report, we can just write a class that is only concerned
+with the report format; however, there are some serious problems with our implementation:
 
-Here are our [tests](src/salary-reporter-hierarchy.test.js).
-
-And now, for a code review of our solution:
-
-* Our solution is unnecessarily verbose, which makes it hard to read and introduces more opportunties for bugs.
-* It mutates variables including `employeeTotal` and `ret` in the base class' `makeEmployeeSummaryTable` and the instance
-variable `employeeSummaryTable`. Not only is this unnecessary, it makes it harder to reason about. It also contributes to the verbosity as stated above.
+* it's unnecessarily verbose, which makes it hard to read and introduces more opportunties for bugs.
+* It mutates local variables including `employeeTotal` (among others) and the instance
+variable `employees`. Not only is this unnecessary, it makes it harder to reason about. Who changed what variable? It also contributes to the verbosity as stated above.
 * Writing tests is unnecessarily hard. Because we are reading and writing to the file system, we have to ensure those files 
-exist and are writable before each test and are removed after.
+exist, are writable before each test and are removed after.
 
 ## A Functional Implementation
 
-Now let's fix these issues by applying the principles of fp we mentioned in the beginning of this post. But before we get
-started let's discuss the principles in a bit more detail.
+Now let's fix these issues by applying the basic characteristics of fp we mentioned in the beginning of this post. But before we get started let's discuss the principles in a bit more detail.
 
 ### Pure Functions as Primary Building Blocks
 
