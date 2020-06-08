@@ -429,15 +429,25 @@ With some theory out of the way, we're ready to refactor. Let's start, for now, 
 Our strategy is to create a new function that strings together simple functions together in a pipeline, each one consuming the output of the and feeding its output to the next one. This is how we want to think about it:
 
 Read JSON string
+<br>
 ↓
+<br>
 Censor social security numbers
+<br>
 ↓
+<br>
 Parse JSON
+<br>
 ↓
+<br>
 Filter out inactive employees
+<br>
 ↓
+<br>
 Sort by last name
+<br>
 ↓
+<br>
 Report as CSV/HTML
 
 ### Getting the JSON String
