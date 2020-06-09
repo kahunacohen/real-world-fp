@@ -556,12 +556,12 @@ Report as CSV/HTML
 ### Filtering for active employees
 
 Next, we want to filter out inactive employees, which we can do so easily using the higher order function (HOF),
-`Array.filter`. An HOF is a function that takes a function as an argument. Most of these in JavaScript, like `Array.filter`, `Array.map` etc. are pure. For example, they return new arrays without mutating any variables.
+`Array.filter`. An HOF is a function that takes a function as an argument. Most HOFs in JavaScript, like `Array.filter`, `Array.map` etc. are pure (e.g. they return new arrays without mutating any variables).
 
 Our filter implementation is so clear, we don't even feel compelled to create a name function for it (at least not yet).
-However, we have to import `filter` from ramda because `Array.filter` is called on the array and takes a callback as a parameter. The version of `filter` in ramda makes composition possible by taking two arguments, the callback and the array to filter.
+However, we have to import `filter` from ramda because the built-in`Array.filter` is called on an array instance and takes a callback as a parameter. The version of `filter` in ramda makes composition possible by taking two arguments, the callback and the array to filter.
 
-The interesting thing about Ramda's `filter` is that if you pass it only one argument (e.g. the callback), it returns a function that receives the rest of the arguments (the array). Because passing it only one argument returns a function, we can *invoke* it in the composition with the callback and it will return a function that implicitely accepts the array. This is called currying/partial application. We'll discuss this more in a future post: 
+The interesting thing about Ramda's `filter` is that if you pass it only one argument (e.g. the callback), it returns a function that receives the rest of the arguments (the array). Because passing it only one argument returns a function, we can *invoke* it in the composition with the callback and it will return a function that implicitely accepts the array. This is called [currying/partial application](https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339). We'll discuss this more in a future post: 
 
 ```js
 const { compose, filter } from "ramda";
@@ -574,7 +574,7 @@ const parseEmployees = compose(
 );
 ```
 Are you starting to see how declarative this is? Our function definition tells us exactly what's going on, without spilling
-all the gory details.
+out implementation details for all to see. Compare this to the filtering function we wrote earlier.
 
 <strike>Read JSON string</strike>
 <br>
@@ -598,6 +598,57 @@ Sort by last name
 <br>
 Report as CSV/HTML
 
+### Sort by Last Name
+
+Now we have a filtered array of censored employee objects. We need to sort the objects by last name. Essentially, we can re-use the sorting function we wrote earlier, leveraging `Array.sort`:
+
+```
+const sortByLastName = (employees) => {
+  return employees.sort((firstEl, secondEl) => {
+    if (firstEl.lastName < secondEl.lastName) {
+      return -1;
+    }
+    if (firstEl.lastName > secondEl.lastName) {
+      return 1;
+    }
+    return 0;
+  });
+};
+```
+Let's add it to our composition:
+
+```
+...
+const parseEmployees = compose(
+  sortByLastName,
+  filter(employee => employee.active),
+  JSON.parse,
+  censor
+);
+
+```
+
+<strike>Read JSON string</strike>
+<br>
+↓
+<br>
+<strike>Censor social security numbers</strike>
+<br>
+↓
+<br>
+<strike>Parse JSON</strike>
+<br>
+↓
+<br>
+<strike>Filter out inactive employees</strike>
+<br>
+↓
+<br>
+<strike>Sort by last name</strike>
+<br>
+↓
+<br>
+Report as CSV/HTML
 
 
 ### Making the Tabular Data Structure
