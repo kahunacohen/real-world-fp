@@ -5,7 +5,7 @@ This post is aimed toward beginning to intermediate JavaScript developers with a
 Functional programming (fp) is getting a lot of attention in the JavaScript community, due to the visibility of libraries such as [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
 
 But what is fp, how does it differ from typical object oriented programs, and how can it make our programs better? Although
-fp can be a complex topic, we'll simplify and discuss three main characteristics of fp:
+fp can be a complex topic, we'll distill fp to three main points:
 
 1. pure functions over side-effects
 1. immutability over mutability
@@ -13,7 +13,7 @@ fp can be a complex topic, we'll simplify and discuss three main characteristics
 
 We'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style and continue the refactor in later posts.
 
-Let's imagine we have data in JSON representing employees. For now, we'll fetch it from a file. `employees.json`:
+Let's imagine we have data in a JSON file:
 
 ```json
 [
@@ -77,8 +77,7 @@ censored. When imported into a spreadsheet program the CSV should render like so
 
 ## Procedural/Object-Oriented, Monolithic Approach
 
-I'll implement this using a somewhat naive object-oriented, procedural approach. Note that the code we'll develop will 
-read like step-by-step instructions (procedural) and will modify instance variables in-place.
+I'll implement this using a somewhat naive object-oriented, procedural approach:
 
 ```js
 const fs = require("fs");
