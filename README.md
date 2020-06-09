@@ -13,7 +13,7 @@ fp can be a complex topic, we'll distill fp to three main points:
 
 We'll implement a typical programming task in a an object-oriented, procedural style and then transform it to a functional style and continue the refactor in later posts.
 
-Let's imagine we have data in JSON representing employees. For now, we'll fetch it from a file. `employees.json`:
+Let's imagine we have data in a JSON file:
 
 ```json
 [
