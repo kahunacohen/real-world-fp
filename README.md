@@ -902,6 +902,27 @@ const jsonStr = fs.readFileSync("employees.json", {encoding: "utf8"});
 x(jsonStr);
 ```
 
+Our base functionality is taking a JSON string and transforming it to a two-dimensional array. We'll call it `employeesToTable`:
+
+```js
+...
+const employeesToTable = compose(
+  JSONToTable,
+  sortByLastName,
+  filter(employee => employee.active),
+  JSON.parse,
+  censor
+);
+```
+
+We can then specialize by using composition, instead of inheritance:
+
+```js
+...
+employeesToCSV = compose(join("\n"), employeesToTable);
+employeesToHTML = compose(toHTML, employeesToTable);
+```
+
 ## Last Words
 We've accomplished addressing the deficiencies of the procedural style code we wrote at the beginning of the post. The
 functional implementation:
