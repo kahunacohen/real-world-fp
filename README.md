@@ -819,7 +819,51 @@ const x = compose(
 
 #### HTML
 
-For HTML 
+Now for the HTML. This isn't as simple as joining the array on new-lines. We'll re-use the HTML function
+that we wrote previously:
+
+```js
+const toHTML = (tableData) => {
+  const headerRow =
+    "<tr>" +
+    tableData[0].map((heading) => `<th>${heading}</th>`).join("") +
+    "</tr>";
+
+  const dataRows = tableData
+    .slice(1) // Everything but the first row
+    .map((row) => {
+      const cells = row.map((data) => `<td>${data}</td>`).join("");
+      return `<tr>${cells}</tr>`;
+    })
+    .join("");
+
+  return `
+  <table>
+    <thead>
+      ${headerRow}
+    </thead>
+    <tbody>
+      ${dataRows}
+    </tbody>
+  </table>`;
+};
+```
+...and we'll replace `join` with this function to make sure it works:
+
+```js
+...
+const x = compose(
+  toHTML,
+  // joing("\n")
+  JSONToTable,
+  sortByLastName,
+  filter(employee => employee.active),
+  JSON.parse,
+  censor
+);
+```
+There we have it. We still have some clean up to do, but we have a working, concise and declarative function.
+
 
 <strike>Read JSON string</strike>
 <br>
@@ -845,78 +889,10 @@ For HTML
 <br>
 ↓
 <br>
-Report
-```
-### HTML
+<strike>Report</strike>
 
-Because we are also being asked to output HTML, we need a function that takes the tabular data and transforms it to HTML. Meanwhile we can break apart the composition to make it more granular.
-
-```js
-const employeeTableFromFile = compose(
-  makeSummaryTable,
-  filter(empl => empl.active)
-  JSON.parse,
-  readFile(`${__dirname}/employees.json`)
-);
-```
-
-Now we have a function for returning the table from a file. Let's create another function for outputting CSV from that:
-
-```js
-...
-const employeeSummaryAsCSV = compose(
-  join("\n"),
-  employeeSummaryFromFile
-);
-```
-
-We'll create a separate function which takes the two dimensional array and outputs an HTML string. To
-keep the function pure, we'll pass in the date instead of calculating it in the function body:
-
-```js
-...
-const asHTML = (table, date) => {
-    const headerRow =
-      "<tr>" +
-      this.employeeSummaryTable[0]
-        .map((heading) => `<th>${heading}</th>`)
-        .join("") +
-      "</tr>";
-
-    const dataRows = this.employeeSummaryTable
-      .slice(1) // Everything but the first row
-      .map((row) => {
-        const cells = row.map((data) => `<td>${data}</td>`).join("");
-        return `<tr>${cells}</tr>`;
-      })
-      .join("");
-
-    const html = `<html>
-    <head>
-      <title>Employee Report: ${date}</title>
-    </head>
-    <body>
-      <table>
-        <thead>
-          ${headerRow}
-        </thead>
-        <tbody>
-          ${dataRows}
-        </tbody>
-      </table>
-    </body>
-  </html>`;
-};
-```
-
-Now that we have a function for the HTML it's just a matter of plugging it in:
-
-```js
-const employeeSummaryAsHTML = compose(
-  asHTML,
-  employeeSummaryFromFile
-);
-```
+## Legos
+foo
 
 ## Last Words
 We've accomplished addressing the deficiencies of the procedural style code we wrote at the beginning of the post. The
