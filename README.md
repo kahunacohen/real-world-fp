@@ -775,7 +775,7 @@ To output this data structure to CSV we need to join the array on new-lines (act
 const { compose, filter, join } = require("ramda");
 ...
 
-compose(
+const x = compose(
   join("\n"),
   JSONToTable,
   filter(empl => empl.active)
