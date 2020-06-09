@@ -924,11 +924,12 @@ employeesToHTML = compose(toHTML, employeesToTable);
 ```
 
 ## Last Words
-We've accomplished addressing the deficiencies of the procedural style code we wrote at the beginning of the post. The
-functional implementation:
+We've accomplished addressing the deficiencies of the object-oriented, procedural style code we wrote at the beginning of the post. The functional implementation:
 
-1. is more concise, making it easier to quickly grasp and more likely to be correct. There is no unnecessary fluff relating to classes etc. The code is declarative. It reads like a spec rather than a cryptic set of instructions.
+1. is more concise, making it easier to grasp and more likely to be correct. There is no unnecessary fluff relating to classes etc. The code is declarative. It reads like a spec rather than a cryptic set of instructions.
 1. doesn't rely on or mutate variables outside each function's scope.
+1. doesn't mutate any local variables.
 1. is more modular. We can easily mix and match functions to achieve specialization instead of using complex inheritance hierarchies.
-1. Writing tests is easy because we've walled off side-effects from the rest of the code. Asserting correct behavior
-of pure functions is way easier than checking side-effects.
+1. Writing tests is easy because each function is pure, small and specialized. We've pushed side-effects off to the periphery of the program and if necessary can test that in isolation from the core of our program.
+
+There are some more issues to discuss, however. How do we easily debug function compositions? What about error handling? We'll take a look at these and more in subsequent posts. 
