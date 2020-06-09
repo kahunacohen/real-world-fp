@@ -769,7 +769,7 @@ Report
 #### CSV
 
 Now that we have a tabular data structure it's easy to output this as CSV or an HTML table. 
-To output this data structure to CSV we need to join they array on new-lines (actually in production code you'd use a CSV library to cover edge cases). We can use the `join` function from Ramda, which takes the delimiter as the first argument and the array as the last parameter. `Array.join` would not work in our composition because we need the array to be a parameter. Let's add it:
+To output this data structure to CSV we need to join the array on new-lines (actually in production code you'd use a CSV library to cover edge cases). We can use the `join` function from Ramda, which takes the delimiter as the first argument and the array as the last parameter. `Array.join` would not work in our composition because we need the array to be a parameter. Let's add it:
 
 ```js
 const { compose, filter, join } = require("ramda");
