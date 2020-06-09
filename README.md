@@ -837,7 +837,7 @@ const toHTML = (tableData) => {
 ...
 const x = compose(
   toHTML,
-  // joing("\n")
+  // join("\n")
   JSONToTable,
   sortByLastName,
   filter(employee => employee.active),
@@ -884,7 +884,7 @@ is what we have now:
 ```js
 const x = compose(
   toHTML,
-  // joing("\n")
+  // join("\n")
   JSONToTable,
   sortByLastName,
   filter(employee => employee.active),
