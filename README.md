@@ -875,7 +875,8 @@ There we have it. We still have some clean up to do, but we have a working, conc
 <strike>Report</strike>
 
 ## Legos
-foo
+One of the great benefits of programming this way is that we can fit small, manageble pieces of code however we like
+with minimum fuss.
 
 ## Last Words
 We've accomplished addressing the deficiencies of the procedural style code we wrote at the beginning of the post. The
