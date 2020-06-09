@@ -452,7 +452,7 @@ Make tabular data structure
 <br>
 ↓
 <br>
-Report as CSV/HTML
+Report
 
 ### Read the JSON String
 
@@ -486,7 +486,7 @@ Make tabular data structure
 <br>
 ↓
 <br>
-Report as CSV/HTML
+Report
 
 ### Censor Social Security Numbers
 
@@ -525,7 +525,7 @@ Make tabular data structure
 <br>
 ↓
 <br>
-Report as CSV/HTML
+Report
 
 ### Parse JSON
 Hey, how simple can you get? We already have a function for this, and we don't even have to write it. It's called:
@@ -567,7 +567,7 @@ Make tabular data structure
 <br>
 ↓
 <br>
-Report as CSV/HTML
+Report
 
 ### Filtering for active employees
 
@@ -616,7 +616,7 @@ Make tabular data structure
 <br>
 ↓
 <br>
-Report as CSV/HTML
+Report
 
 ### Sort by Last Name
 
@@ -672,46 +672,117 @@ Make tabular data structure
 <br>
 ↓
 <br>
-Report as CSV/HTML
+Report
 
 
 ### Making the Tabular Data Structure
 
-Next in our pipeline is transforming the employee objects to a two-dimensional array that can represent a summary table.
-We want to return an array of arrays, each sub-array a row of the table. The first row contains the table headers:
+Next in our pipeline is transforming the employee objects to a two-dimensional array that can represent a table.
+We want to return an array of arrays, each sub-array a row of the table. 
+
+Our earlier implementation is problematic for several reasons:
 
 ```js
-const makeSummaryTable = (employees) => {
-  return [["Last Name", "First Name"]].concat(
+...
+makeEmployeeSummaryTable() {
+    // The first row of the return array are the headers
+    let ret = [["Last Name", "First Name", "Social Security", "Total Salary"]];
+    // For each employee...
+    for (let i = 0; i < this.employees.length; i++) {
+      const employee = this.employees[i];
+
+      // Only active employees
+      if (employee.active) {
+        let employeeTotal = 0;
+
+        // Sum the yearly payments
+        for (let j = 0; j < employee.pay.length; j++) {
+          employeeTotal += employee.pay[j];
+        }
+
+        // Add a row with the employee's info, including total salary
+        let row = [
+          employee.lastName,
+          employee.firstName,
+          employee.socialSecurity,
+          employeeTotal,
+        ];
+        ret.push(row);
+      }
+    }
+    return ret;
+  }
+```
+
+1. It's verbose.
+2. It manually manages loop state. 
+3. It mutates local variables.
+
+Let's address these issues by rewriting this with a functional style:
+
+```js
+const JSONtoTable = (employees) => {
+  return [
+    ["Last Name", "First Name", "Total Pay", "Social Security Number"],
+  ].concat(
     employees.map((x) => [
       x.lastName,
       x.firstName,
+      x.socialSecurity,
       x.pay.reduce((acc, curr) => acc + curr),
     ])
   );
 };
 ```
 
-1. We `concat` the header row and [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) each employee object to a an array whose elements are first name, last name and
-total pay.
-`map` is a critical tool for functional programmers. It's called a *higher order* function because it takes a function as
-an argument. It *maps* over arrays, applying a function to each element and returning a *new* array.
-1. Instead of mutating an accumulator variable to calculate payment totals, we apply the [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) function to the employee's `pay` array. `reduce` is another critical higher order function that takes as a parameter a reducer function with an accumulator and current element parameter. It is typically used to operate on arrays and reduce them to one value. In this case we reduce the `pay` array elements to their sum.
+1. We `concat` the header row and [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) each employee object to a an array whose elements are the
+employee properties, including total pay.
 
-Note how concise our function is. We don't mutate any local variables and are simply transforming our input array to another array
-that's suitable for rendering in tabular format. Let's add it to our composition:
+`map` is a critical tool for functional programmers precicesly because it transforms an existing array and maps (or transforms) it to a new array without mutating any variables.
+
+To sum each employee's payments, we don't mutate an accumulator array to calculate payment totals. Instead we apply the HOF [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) function to the employee's `pay` array. `reduce` is another critical HOF that takes as a parameter a reducer function. The reducer function takes an accumulator and current element parameter. It is typically used to operate on arrays and reduce them to one value. In this case we reduce the `pay` array elements to their sum.
+
+ Let's add this to our composition:
 
 ```js
 ...
-compose(
-  makeSummaryTable,
-  filter(empl => empl.active)
+const parseEmployees = compose(
+  JSONToTable,
+  sortByLastName,
+  filter(employee => employee.active),
   JSON.parse,
-  readFile(`${__dirname}/employees.json`)
+  censor
 );
+
 ```
 
-### CSV
+<strike>Read JSON string</strike>
+<br>
+↓
+<br>
+<strike>Censor social security numbers</strike>
+<br>
+↓
+<br>
+<strike>Parse JSON</strike>
+<br>
+↓
+<br>
+<strike>Filter out inactive employees</strike>
+<br>
+↓
+<br>
+<strike>Sort by last name</strike>
+<br>
+↓
+<br>
+<strike>Make tabular data structure</strike>
+<br>
+↓
+<br>
+Report
+
+### Report
 
 To output this data structure to CSV we need to simply join they array on new-lines (well, actually in production code you'd use
 a CSV library). Again, we can use the `join` function from Ramda, which takes the array we are working
