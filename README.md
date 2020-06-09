@@ -84,12 +84,22 @@ const fs = require("fs");
 
 class SalaryReporter {
   constructor(path) {
+    // Read the JSON string, save as an instance variable.
     this.employeesAsStr = fs.readFileSync(path, { encoding: "utf-8" });
+
+    // censors JSON string in-place
     this.censor();
+
     // Ignore possible JSON parse errors for now.
     this.employees = JSON.parse(this.employeesAsStr);
+
+    // Filters active employees in-place.
     this.filterByActive();
+
+    // Sorts in-place.
     this.sortByLastName();
+
+    // Create a 2dim array suitable for rendering tables.
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
   }
   filterByActive() {
@@ -178,7 +188,7 @@ class BaseSalaryReporter {
     constructor(path) {
     this.employeesAsStr = fs.readFileSync(path, { encoding: "utf-8" });
     this.censor();
-    
+
     // Ignore possible JSON parse errors for now.
     this.employees = JSON.parse(this.employeesAsStr);
     this.filterByActive();
