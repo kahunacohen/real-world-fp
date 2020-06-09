@@ -5,7 +5,7 @@ This post is aimed toward beginning to intermediate JavaScript developers with a
 Functional programming (fp) is getting a lot of attention in the JavaScript community, due to the visibility of libraries such as [ReactJs](https://reactjs.org/), [Redux](https://redux.js.org/) and [Rxjs](https://rxjs-dev.firebaseapp.com/).
 
 But what is fp, how does it differ from typical object oriented programs, and how can it make our programs better? Although
-fp can be a complex topic, we'll simplify and discuss three main characteristics of fp:
+fp can be a complex topic, we'll distill fp to three main points:
 
 1. pure functions over side-effects
 1. immutability over mutability
