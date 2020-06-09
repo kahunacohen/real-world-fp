@@ -172,11 +172,6 @@ class SalaryReporter {
   }
 }
 ```
-A few notes. This implementation:
-
-* performs side effects, namely reading and writing input and output files
-* performs multiple mutations on an instance variable (`this.employees`) after it is first parsed from JSON. It then
-reads this data structure to create a two-dimensional array of data that the `report` method uses to generate a CSV table.
 
 ## A Hierarchical Approach
 Now, imagine, we've been asked to also generate an HTML report. A common approach is to create a hierarchy of `SalaryReporter` classes, each one responsible for writing the report in a different way. Let's do that now. Here's a base class for both the CSV reporter and an HTML reporter. We just extracted out the `report` method. Here's the base class:
@@ -188,8 +183,6 @@ class BaseSalaryReporter {
     constructor(path) {
     this.employeesAsStr = fs.readFileSync(path, { encoding: "utf-8" });
     this.censor();
-
-    // Ignore possible JSON parse errors for now.
     this.employees = JSON.parse(this.employeesAsStr);
     this.filterByActive();
     this.sortByLastName();
@@ -312,12 +305,11 @@ class SalaryHTMLReporter extends BaseSalaryReporter {
   }
 }
 ```
-This is kind of better. Now when we need a new kind of report, we can just write a class that is only concerned
+This is *kind* of better. Now when we need a new kind of report, we can just write a class that is only concerned
 with the report format; however, there are some serious problems with our implementation:
 
 * it's unnecessarily verbose, which makes it hard to read and introduces more opportunities for bugs.
-* It mutates local variables including `employeeTotal` (among others) and the instance
-variable `employees`. Not only is this unnecessary, it makes it harder to reason about. Who changed what variable? It also contributes to the verbosity as stated above.
+* It mutates instance and local variables in-place. Not only is this unnecessary, it makes it harder to reason about. Who changed what variable and where? It also contributes to the verbosity as stated above.
 * Writing tests is unnecessarily hard. Because we are reading and writing to the file system, we have to ensure those files 
 exist, are writable before each test and are removed after.
 
@@ -363,7 +355,7 @@ The second main characteristic of fp is immutability. Immutability means *not* m
 ### Composition over Inheritance
 
 In fp composition is used instead of inheritance. We specialize behavior by plugging smaller functions together in different
-ways to make larger functions using data pipelines.
+ways to make larger functions.
 
 This is best illustrated by the Unix tool set, which is a collection of small, focused programs that can be strung together. Each program takes from `stdin` and outputs to `stdout`. Unix programs don't care about where they get their input from and where they dump their output.
 
@@ -394,10 +386,10 @@ upper(exclaimed); // "GET OUT!"
 upper(exclaim("get out"));
 ```
 
-But that's not as obvious as Unix pipes, especially when piping together more than two functions. It's not immediately clear that there's a transformation of data, so instead we can leverage a `compose` function that makes this clearer. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
-will do. 
+But this doesn't make the pipeline as obvious as it is with Unix pipes, especially when piping together more than two functions. It's not immediately clear that there's a transformation of data, so instead we can leverage a `compose` function that makes this clearer. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
+will do (Ramda is a popular functional JavaScript library.
 
-`compose` takes any number of functions, starting at the right and passes each one's output to the function to the left. Ramda is an fp JavaScript utility library. `compose` returns a new function that is a *composition* of all the passed functions. So instead of the above, we can do this:
+`compose` takes any number of functions, starting at the right and passes each one's output to the function to the left. `compose` returns a new function that is a *composition* of all the passed functions. So instead of the above, we can do this:
 
 ```js
 import { compose } from "ramda";
@@ -450,11 +442,10 @@ Report
 
 ### Read the JSON String
 
-We're going to punt here? Why? Because reading the JSON is impure: we have to read from the file system. Of course
-impurity is a large part of real-world programming. At some point we have to reach out into the world and affect it.
+We're going to punt here. Why? Because reading the JSON from the file is impure: we have to read from the file system. Of course impurity is a large part of real-world programming. At some point we have to reach out into the world and affect it.
 
 The point of fp isn't to avoid impurity, rather to isolate it and move it to the periphery of your program logic. In this
-case we can assume the caller of our function will get the raw, employee data. We can assume that `fs.readFileSync` is vetted and well tested by the core Nodejs team. Now we will be able to test our program without having the setup/teardown cruft that's required when reading and writing to the filesystem.
+case we can assume the caller of our function will get the raw, employee data. We can assume that `fs.readFileSync` is vetted and tested by the core Nodejs team. With this out of scope, we will be able to test our program without having the setup/teardown cruft that's required when reading and writing to the filesystem.
 
 <strike>Read JSON string</strike>
 <br>
@@ -493,7 +484,7 @@ const censor = (s) =>
  We are using `replace` on the string, passing a function instead of a replacement string. The function
  grabs the captured last four digits of the social security number.
  
-Because it's a small function that only does one thing and because it's pure, imagine how easy it would be to test this in isolation from the rest of the program. There's no setup/teardown and easy to assert against such simple behavior.
+Because it's a small, pure function that only does one thing, imagine how easy it would be to test this in isolation from the rest of the program. There's no setup/teardown.
 
 <strike>Read JSON string</strike>
 <br>
@@ -530,7 +521,7 @@ Let's start to compose our functions we have so far. We'll delay naming our comp
 ```js
 const { compose } = require("ramda");
 ...
-const f = compose(JSON.parse, censor); // censor first, then parse the JSON.
+const f = compose(JSON.parse, censor); // censor the string first, then parse the JSON.
 ```
 
 We should now be able to read the JSON file and pass the string to `f`, getting back an employee array
@@ -568,9 +559,9 @@ Next, we want to filter out inactive employees, which we can do so easily using 
 `Array.filter`. An HOF is a function that takes a function as an argument. Most HOFs in JavaScript, like `Array.filter`, `Array.map` etc. are pure (e.g. they return new arrays without mutating any variables).
 
 Our filter implementation is so clear, we don't even feel compelled to create a name function for it (at least not yet).
-However, we have to import `filter` from ramda because the built-in`Array.filter` is called on an array instance and takes a callback as a parameter. The version of `filter` in ramda makes composition possible by taking two arguments, the callback and the array to filter.
+However, we have to import `filter` from ramda because the built-in`Array.filter` is called on an array instance and takes a callback as a parameter. Ramda's `filter` makes composition possible by taking two arguments, the callback and the array to filter.
 
-The interesting thing about Ramda's `filter` is that if you pass it only one argument (e.g. the callback), it returns a function that receives the rest of the arguments (the array). Because passing it only one argument returns a function, we can *invoke* it in the composition with the callback and it will return a function that implicitly accepts the array. This is called [currying/partial application](https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339). We'll discuss this more in a future post: 
+The interesting thing about Ramda's `filter` is that if you pass it only one argument (e.g. the callback), it returns a function that receives the rest of the arguments (the array). Because passing it only one argument returns a function, we can *invoke* it in the composition with the callback and it will return a function that implicitly accepts the array. This is called [currying/partial application](https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339). We'll discuss this more in a future post. Let's add our filtering:
 
 ```js
 const { compose, filter } from "ramda";
@@ -583,7 +574,7 @@ const x = compose(
 );
 ```
 Are you starting to see how declarative this is? Our function definition tells us exactly what's going on, without spilling
-out implementation details for all to see. Compare this to the filtering function we wrote earlier.
+ugly implementation details for all to see. Compare this to the filtering function we wrote earlier.
 
 <strike>Read JSON string</strike>
 <br>
@@ -613,7 +604,7 @@ Report
 
 ### Sort by Last Name
 
-Now we have a filtered array of censored employee objects. We need to sort the objects by last name. Essentially, we can re-use the sorting function we wrote earlier, leveraging `Array.sort`:
+Now we have a filtered array of censored employee objects. We need to sort the objects by last name. We can re-use the sorting function we wrote earlier, leveraging `Array.sort`:
 
 ```js
 const sortByLastName = (employees) => {
@@ -670,7 +661,7 @@ Report
 
 ### Making the Tabular Data Structure
 
-Next in our pipeline is transforming the employee objects to a two-dimensional array that represents a table.
+Next on our to-do list is transforming the employee objects to a two-dimensional array that represents a table.
 We want to return an array of arrays, each sub-array a row of the table. 
 
 Our earlier implementation is problematic for several reasons. Let's revisit it:
@@ -729,13 +720,11 @@ const JSONtoTable = (employees) => {
 ```
 
 We `concat` the header row and [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) each employee object to a an array whose elements are the
-employee properties, including total pay. `map` is a critical tool for functional programmers precisely because it transforms an existing array and maps (or transforms) it to a new array without mutating any variables.
+employee properties, including total pay. `map` is a critical tool for functional programmers because it transforms an existing array and maps (or transforms) it to a new array without mutating any variables.
 
 To sum each employee's payments, we don't mutate an accumulator array to calculate payment totals. Instead we apply the HOF [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) function to the employee's `pay` array. `reduce` is another critical HOF that takes as a parameter a reducer function. The reducer function takes an accumulator and current element parameter. It is typically used to operate on arrays and reduce them to one value. In this case we reduce the `pay` array elements to their sum.
 
-Because it's more concise and declarative it's less likely to be buggy: there's essentially less code that can go wrong.
-
- Let's add this to our composition:
+Because it's more concise and declarative it's less likely to be buggy: there's essentially less code that can go wrong. Let's add this to our composition:
 
 ```js
 ...
@@ -780,14 +769,15 @@ Report
 #### CSV
 
 Now that we have a tabular data structure it's easy to output this as CSV or an HTML table. 
-To output this data structure to CSV we need to simply join they array on new-lines (actually in production code you'd use a CSV library to cover edge cases). We can use the `join` function from Ramda, which takes the delimiter as the first argument and the array as the last parameter. `Array.join` would not work in our composition because we need the array to be a parameter. Let's add it:
+To output this data structure to CSV we need to join they array on new-lines (actually in production code you'd use a CSV library to cover edge cases). We can use the `join` function from Ramda, which takes the delimiter as the first argument and the array as the last parameter. `Array.join` would not work in our composition because we need the array to be a parameter. Let's add it:
 
 ```js
 const { compose, filter, join } = require("ramda");
+...
 
 compose(
   join("\n"),
-  makeSummaryTable,
+  JSONToTable,
   filter(empl => empl.active)
   JSON.parse,
   readFile(`${__dirname}/employees.json`)
