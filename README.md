@@ -878,6 +878,30 @@ There we have it. We still have some clean up to do, but we have a working, conc
 One of the great benefits of programming this way is that we can fit small, manageble pieces of code however we like
 with minimum fuss.
 
+Let's break out our composition to a function that is common to both a CSV reporter and an HTML reporter. That's easy. This
+is what we have now:
+
+```js
+const x = compose(
+  toHTML,
+  // joing("\n")
+  JSONToTable,
+  sortByLastName,
+  filter(employee => employee.active),
+  JSON.parse,
+  censor
+);
+```
+
+and we use it like this:
+
+```js
+const fs = require("fs");
+
+const jsonStr = fs.readFileSync("employees.json", {encoding: "utf8"});
+x(jsonStr);
+```
+
 ## Last Words
 We've accomplished addressing the deficiencies of the procedural style code we wrote at the beginning of the post. The
 functional implementation:
