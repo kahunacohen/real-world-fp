@@ -84,11 +84,12 @@ const fs = require("fs");
 
 class SalaryReporter {
   constructor(path) {
+    this.employeesAsStr = fs.readFileSync(path, { encoding: "utf-8" });
+    this.censor();
     // Ignore possible JSON parse errors for now.
-    this.employees = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
+    this.employees = JSON.parse(this.employeesAsStr);
     this.filterByActive();
     this.sortByLastName();
-    this.censor();
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
   }
   filterByActive() {
@@ -112,21 +113,12 @@ class SalaryReporter {
     });
   }
   censor() {
-    let ret = [];
-    for (const empl of this.employees) {
-      for (const field in empl) {
-        if (typeof empl[field] === "string") {
-          empl[field] = empl[field].replace(
-            /\d{3}-\d{2}-(\d{4})/,
-            (_, lastFour) => {
-              return `xxx-xx-${lastFour}`;
-            }
-          );
-        }
+    this.employeesAsStr = this.employeesAsStr.replace(
+      /\d{3}-\d{2}-(\d{4})/g,
+      (_, lastFour) => {
+        return `xxx-xx-${lastFour}`;
       }
-      ret.push(empl);
-    }
-    this.employees = ret;
+    );
   }
   /**
    * @returns {Array} - A 2 dim array, with each sub array representing a row
@@ -183,12 +175,14 @@ Now, imagine, we've been asked to also generate an HTML report. A common approac
 const fs = require("fs");
 
 class BaseSalaryReporter {
-  constructor(path) {
+    constructor(path) {
+    this.employeesAsStr = fs.readFileSync(path, { encoding: "utf-8" });
+    this.censor();
+    
     // Ignore possible JSON parse errors for now.
-    this.employees = JSON.parse(fs.readFileSync(path, { encoding: "utf-8" }));
+    this.employees = JSON.parse(this.employeesAsStr);
     this.filterByActive();
     this.sortByLastName();
-    this.censor();
     this.employeeSummaryTable = this.makeEmployeeSummaryTable();
   }
   filterByActive() {
@@ -212,21 +206,12 @@ class BaseSalaryReporter {
     });
   }
   censor() {
-    let ret = [];
-    for (const empl of this.employees) {
-      for (const field in empl) {
-        if (typeof empl[field] === "string") {
-          empl[field] = empl[field].replace(
-            /\d{3}-\d{2}-(\d{4})/,
-            (_, lastFour) => {
-              return `xxx-xx-${lastFour}`;
-            }
-          );
-        }
+    this.employeesAsStr = this.employeesAsStr.replace(
+      /\d{3}-\d{2}-(\d{4})/g,
+      (_, lastFour) => {
+        return `xxx-xx-${lastFour}`;
       }
-      ret.push(empl);
-    }
-    this.employees = ret;
+    );
   }
   /**
    * @returns {Array} - A 2 dim array, with each sub array representing a row
