@@ -490,7 +490,7 @@ Report
 
 ### Censor Social Security Numbers
 
-This is pretty simple. We just break out what we had into a separate function:
+This is pretty simple. We just reuse our censor function we wrote previously:
 
 ```js
 const censor = (s) =>
@@ -531,16 +531,15 @@ Report
 Hey, how simple can you get? We already have a function for this, and we don't even have to write it. It's called:
 `JSON.parse`.
 
-Let's start to compose what we have together now:
+Let's start to compose our functions we have so far. We'll delay naming our composition until later and just call it `f`:
 
 ```js
+const { compose } = require("ramda");
 ...
-// The caller reads the string from `employees.json` and passes it to
-// parseEmployees.
-const parseEmployees = compose(JSON.parse, censor);
+const f = compose(JSON.parse, censor); // censor first, then parse the JSON.
 ```
 
-We should now be able to read the JSON file and pass the string to `parseEmployees`, getting back an employee object
+We should now be able to read the JSON file and pass the string to `f`, getting back an employee array
 with all social security numbers censored.
 
 <strike>Read JSON string</strike>
@@ -583,7 +582,7 @@ The interesting thing about Ramda's `filter` is that if you pass it only one arg
 const { compose, filter } from "ramda";
 
 ...
-const parseEmployees = compose(
+const x = compose(
   filter(employee => employee.active),
   JSON.parse,
   censor
@@ -639,7 +638,7 @@ Let's add it to our composition:
 
 ```js
 ...
-const parseEmployees = compose(
+const x = compose(
   sortByLastName,
   filter(employee => employee.active),
   JSON.parse,
@@ -677,10 +676,10 @@ Report
 
 ### Making the Tabular Data Structure
 
-Next in our pipeline is transforming the employee objects to a two-dimensional array that can represent a table.
+Next in our pipeline is transforming the employee objects to a two-dimensional array that represents a table.
 We want to return an array of arrays, each sub-array a row of the table. 
 
-Our earlier implementation is problematic for several reasons:
+Our earlier implementation is problematic for several reasons. Let's revisit it:
 
 ```js
 ...
@@ -718,7 +717,7 @@ makeEmployeeSummaryTable() {
 2. It manually manages loop state. 
 3. It mutates local variables.
 
-Let's address these issues by rewriting this with a functional style:
+Let's address these issues by rewriting this with in a more functional style:
 
 ```js
 const JSONtoTable = (employees) => {
@@ -740,11 +739,13 @@ employee properties, including total pay. `map` is a critical tool for functiona
 
 To sum each employee's payments, we don't mutate an accumulator array to calculate payment totals. Instead we apply the HOF [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) function to the employee's `pay` array. `reduce` is another critical HOF that takes as a parameter a reducer function. The reducer function takes an accumulator and current element parameter. It is typically used to operate on arrays and reduce them to one value. In this case we reduce the `pay` array elements to their sum.
 
+Because it's more concise and declarative it's less likely to be buggy: there's essentially less code that can go wrong.
+
  Let's add this to our composition:
 
 ```js
 ...
-const parseEmployees = compose(
+const x = compose(
   JSONToTable,
   sortByLastName,
   filter(employee => employee.active),
@@ -796,24 +797,6 @@ compose(
   filter(empl => empl.active)
   JSON.parse,
   readFile(`${__dirname}/employees.json`)
-);
-```
-
-#### CSV
-
-Now that we have CSV as a string, we may want to output the CSV somehow to a file or to the screen. 
-Let's just say, for now, we just want to print it to `stdout`. We can simply add `console.log` to the composition:
-
-```js
-const { compose, filter, join } = require("ramda");
-...
-const x = compose(
-  join("\n"),
-  JSONToTable,
-  sortByLastName,
-  filter(employee => employee.active),
-  JSON.parse,
-  censor
 );
 ```
 
