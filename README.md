@@ -77,7 +77,7 @@ censored. When imported into a spreadsheet program the CSV should render like so
 
 ## Prodedural/Object-Oriented, Monolithic Approach
 
-I'll implement this using a somewhat naive object-oriented, procerdual approach. Note that the code we'll develop will 
+I'll implement this using a somewhat naive object-oriented, procedural approach. Note that the code we'll develop will 
 read like step-by-step instructions (procedural) and will modify instance variables in-place.
 
 ```js
@@ -321,7 +321,7 @@ class SalaryHTMLReporter extends BaseSalaryReporter {
 This is kind of better. Now when we need a new kind of report, we can just write a class that is only concerned
 with the report format; however, there are some serious problems with our implementation:
 
-* it's unnecessarily verbose, which makes it hard to read and introduces more opportunties for bugs.
+* it's unnecessarily verbose, which makes it hard to read and introduces more opportunities for bugs.
 * It mutates local variables including `employeeTotal` (among others) and the instance
 variable `employees`. Not only is this unnecessary, it makes it harder to reason about. Who changed what variable? It also contributes to the verbosity as stated above.
 * Writing tests is unnecessarily hard. Because we are reading and writing to the file system, we have to ensure those files 
@@ -369,9 +369,9 @@ The second main characteristic of fp is immutability. Immutability means *not* m
 ### Composition over Inheritance
 
 In fp composition is used instead of inheritance. We specialize behavior by plugging smaller functions together in different
-wayts to make larger functions using data pipelines.
+ways to make larger functions using data pipelines.
 
-This is best illustrated by the Unix toolset, which is a collection of small, focused programs that can be strung together. Each program takes from `stdin` and outputs to `stdout`. Unix programs don't care about where they get their input from and where they dump their output.
+This is best illustrated by the Unix tool set, which is a collection of small, focused programs that can be strung together. Each program takes from `stdin` and outputs to `stdout`. Unix programs don't care about where they get their input from and where they dump their output.
 
 The power and flexibility of this paradigm comes when we combine these small programs together. For example, to get the first name in alphabetical order of a list of unordered names in a file:
 
@@ -400,7 +400,7 @@ upper(exclaimed); // "GET OUT!"
 upper(exclaim("get out"));
 ```
 
-But that's not as obvious as Unix pipes, especially when piping together more than two functions. It's not immediately clear that there's a transformation of data, so instead we can leverage a `compose` function that makes this clerer. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
+But that's not as obvious as Unix pipes, especially when piping together more than two functions. It's not immediately clear that there's a transformation of data, so instead we can leverage a `compose` function that makes this clearer. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
 will do. 
 
 `compose` takes any number of functions, starting at the right and passes each one's output to the function to the left. Ramda is an fp JavaScript utility library. `compose` returns a new function that is a *composition* of all the passed functions. So instead of the above, we can do this:
@@ -416,7 +416,7 @@ const upper = s => s.toUpperCase();
 const yell = compose(upper, exclaim);
 yell("get out") // "GET OUT!"
 ```
-`yell` receives a string, appends an exlaimation point, then passes that returned string to `upper` which makes it all uppercase.
+`yell` receives a string, appends an exclamation point, then passes that returned string to `upper` which makes it all uppercase.
 
 There's more to function composition than this, but these are the basics. It allows you to write small, focused functions
 to build larger functions. The fact that `exclaim` and `upper` are pure functions makes this composition
@@ -460,7 +460,7 @@ We're going to punt here? Why? Because reading the JSON is impure: we have to re
 impurity is a large part of real-world programming. At some point we have to reach out into the world and affect it.
 
 The point of fp isn't to avoid impurity, rather to isolate it and move it to the periphery of your program logic. In this
-case we can assume the caller of our function will get the raw, employee data. We can assume that `fs.readFileSync` is vetted and welltested by the core Nodejs team. Now we will be able to test our program without having the setup/teardown cruft that's required when reading and writing to the filesystem.
+case we can assume the caller of our function will get the raw, employee data. We can assume that `fs.readFileSync` is vetted and well tested by the core Nodejs team. Now we will be able to test our program without having the setup/teardown cruft that's required when reading and writing to the filesystem.
 
 <strike>Read JSON string</strike>
 <br>
@@ -576,7 +576,7 @@ Next, we want to filter out inactive employees, which we can do so easily using 
 Our filter implementation is so clear, we don't even feel compelled to create a name function for it (at least not yet).
 However, we have to import `filter` from ramda because the built-in`Array.filter` is called on an array instance and takes a callback as a parameter. The version of `filter` in ramda makes composition possible by taking two arguments, the callback and the array to filter.
 
-The interesting thing about Ramda's `filter` is that if you pass it only one argument (e.g. the callback), it returns a function that receives the rest of the arguments (the array). Because passing it only one argument returns a function, we can *invoke* it in the composition with the callback and it will return a function that implicitely accepts the array. This is called [currying/partial application](https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339). We'll discuss this more in a future post: 
+The interesting thing about Ramda's `filter` is that if you pass it only one argument (e.g. the callback), it returns a function that receives the rest of the arguments (the array). Because passing it only one argument returns a function, we can *invoke* it in the composition with the callback and it will return a function that implicitly accepts the array. This is called [currying/partial application](https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339). We'll discuss this more in a future post: 
 
 ```js
 const { compose, filter } from "ramda";
@@ -735,7 +735,7 @@ const JSONtoTable = (employees) => {
 ```
 
 We `concat` the header row and [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) each employee object to a an array whose elements are the
-employee properties, including total pay. `map` is a critical tool for functional programmers precicesly because it transforms an existing array and maps (or transforms) it to a new array without mutating any variables.
+employee properties, including total pay. `map` is a critical tool for functional programmers precisely because it transforms an existing array and maps (or transforms) it to a new array without mutating any variables.
 
 To sum each employee's payments, we don't mutate an accumulator array to calculate payment totals. Instead we apply the HOF [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) function to the employee's `pay` array. `reduce` is another critical HOF that takes as a parameter a reducer function. The reducer function takes an accumulator and current element parameter. It is typically used to operate on arrays and reduce them to one value. In this case we reduce the `pay` array elements to their sum.
 
@@ -875,7 +875,7 @@ There we have it. We still have some clean up to do, but we have a working, conc
 <strike>Report</strike>
 
 ## Legos
-One of the great benefits of programming this way is that we can fit small, manageble pieces of code however we like
+One of the great benefits of programming this way is that we can fit small, manageable pieces of code however we like
 with minimum fuss.
 
 Let's break out our composition to a function that is common to both a CSV reporter and an HTML reporter. That's easy. This
