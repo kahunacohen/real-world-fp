@@ -77,8 +77,7 @@ censored. When imported into a spreadsheet program the CSV should render like so
 
 ## Procedural/Object-Oriented, Monolithic Approach
 
-I'll implement this using a somewhat naive object-oriented, procedural approach. Note that the code we'll develop will 
-read like step-by-step instructions (procedural) and will modify instance variables in-place.
+I'll implement this using a somewhat naive object-oriented, procedural approach:
 
 ```js
 const fs = require("fs");
