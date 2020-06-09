@@ -859,7 +859,7 @@ There we have it. We still have some clean up to do, but we have a working, conc
 <strike>Report</strike>
 
 ## Legos
-One of the great benefits of programming this way is that we can fit small, manageable pieces of code however we like
+One of the great benefits of programming this way is that we can fit together small, manageable pieces of code however we like
 with minimum fuss.
 
 Let's break out our composition to a function that is common to both a CSV reporter and an HTML reporter. That's easy. This
