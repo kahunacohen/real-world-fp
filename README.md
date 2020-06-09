@@ -735,10 +735,8 @@ const JSONtoTable = (employees) => {
 };
 ```
 
-1. We `concat` the header row and [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) each employee object to a an array whose elements are the
-employee properties, including total pay.
-
-`map` is a critical tool for functional programmers precicesly because it transforms an existing array and maps (or transforms) it to a new array without mutating any variables.
+We `concat` the header row and [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) each employee object to a an array whose elements are the
+employee properties, including total pay. `map` is a critical tool for functional programmers precicesly because it transforms an existing array and maps (or transforms) it to a new array without mutating any variables.
 
 To sum each employee's payments, we don't mutate an accumulator array to calculate payment totals. Instead we apply the HOF [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) function to the employee's `pay` array. `reduce` is another critical HOF that takes as a parameter a reducer function. The reducer function takes an accumulator and current element parameter. It is typically used to operate on arrays and reduce them to one value. In this case we reduce the `pay` array elements to their sum.
 
@@ -784,9 +782,10 @@ Report
 
 ### Report
 
-To output this data structure to CSV we need to simply join they array on new-lines (well, actually in production code you'd use
-a CSV library). Again, we can use the `join` function from Ramda, which takes the array we are working
-on as the last parameter. When composing, that last parameter is implicitly passed from the previous function in the pipeline. Let's add `join`:
+#### CSV
+
+Now that we have a tabular data structure it's easy to output this as CSV or an HTML table. 
+To output this data structure to CSV we need to simply join they array on new-lines (actually in production code you'd use a CSV library to cover edge cases). We can use the `join` function from Ramda, which takes the delimiter as the first argument and the array as the last parameter. `Array.join` would not work in our composition because we need the array to be a parameter. Let's add it:
 
 ```js
 const { compose, filter, join } = require("ramda");
@@ -800,20 +799,53 @@ compose(
 );
 ```
 
-### Output CSV
+#### CSV
 
 Now that we have CSV as a string, we may want to output the CSV somehow to a file or to the screen. 
 Let's just say, for now, we just want to print it to `stdout`. We can simply add `console.log` to the composition:
 
 ```js
-compose(
-  console.log,
+const { compose, filter, join } = require("ramda");
+...
+const x = compose(
   join("\n"),
-  makeSummaryTable,
-  filter(empl => empl.active)
+  JSONToTable,
+  sortByLastName,
+  filter(employee => employee.active),
   JSON.parse,
-  readFile(`${__dirname}/employees.json`)
+  censor
 );
+```
+
+#### HTML
+
+For HTML 
+
+<strike>Read JSON string</strike>
+<br>
+↓
+<br>
+<strike>Censor social security numbers</strike>
+<br>
+↓
+<br>
+<strike>Parse JSON</strike>
+<br>
+↓
+<br>
+<strike>Filter out inactive employees</strike>
+<br>
+↓
+<br>
+<strike>Sort by last name</strike>
+<br>
+↓
+<br>
+<strike>Make tabular data structure</strike>
+<br>
+↓
+<br>
+Report
 ```
 ### HTML
 
