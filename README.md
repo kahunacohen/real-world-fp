@@ -448,6 +448,10 @@ Sort by last name
 <br>
 ↓
 <br>
+Make tabular data structure
+<br>
+↓
+<br>
 Report as CSV/HTML
 
 ### Read the JSON String
@@ -475,6 +479,10 @@ Filter out inactive employees
 ↓
 <br>
 Sort by last name
+<br>
+↓
+<br>
+Make tabular data structure
 <br>
 ↓
 <br>
@@ -513,6 +521,10 @@ Sort by last name
 <br>
 ↓
 <br>
+Make tabular data structure
+<br>
+↓
+<br>
 Report as CSV/HTML
 
 ### Parse JSON
@@ -548,6 +560,10 @@ Filter out inactive employees
 ↓
 <br>
 Sort by last name
+<br>
+↓
+<br>
+Make tabular data structure
 <br>
 ↓
 <br>
@@ -596,13 +612,17 @@ Sort by last name
 <br>
 ↓
 <br>
+Make tabular data structure
+<br>
+↓
+<br>
 Report as CSV/HTML
 
 ### Sort by Last Name
 
 Now we have a filtered array of censored employee objects. We need to sort the objects by last name. Essentially, we can re-use the sorting function we wrote earlier, leveraging `Array.sort`:
 
-```
+```js
 const sortByLastName = (employees) => {
   return employees.sort((firstEl, secondEl) => {
     if (firstEl.lastName < secondEl.lastName) {
@@ -617,7 +637,7 @@ const sortByLastName = (employees) => {
 ```
 Let's add it to our composition:
 
-```
+```js
 ...
 const parseEmployees = compose(
   sortByLastName,
@@ -645,6 +665,10 @@ const parseEmployees = compose(
 ↓
 <br>
 <strike>Sort by last name</strike>
+<br>
+↓
+<br>
+Make tabular data structure
 <br>
 ↓
 <br>
