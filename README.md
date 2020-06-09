@@ -75,7 +75,7 @@ censored. When imported into a spreadsheet program the CSV should render like so
 | Doe        | John       | xxx-xx-588      | 97234.76
 | Jane       | Mary       | xxx-xx-322      | 151928.21
 
-## Prodedural/Object-Oriented, Monolithic Approach
+## Procedural/Object-Oriented, Monolithic Approach
 
 I'll implement this using a somewhat naive object-oriented, procedural approach. Note that the code we'll develop will 
 read like step-by-step instructions (procedural) and will modify instance variables in-place.
