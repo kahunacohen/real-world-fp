@@ -387,7 +387,7 @@ upper(exclaim("get out"));
 ```
 
 But this doesn't make the pipeline as obvious as it is with Unix pipes, especially when piping together more than two functions. It's not immediately clear that there's a transformation of data, so instead we can leverage a `compose` function that makes this clearer. Ramda's [`compose`](https://ramdajs.com/docs/#compose) function 
-will do (Ramda is a popular functional JavaScript library.
+will do (Ramda is a popular functional JavaScript library).
 
 `compose` takes any number of functions, starting at the right and passes each one's output to the function to the left. `compose` returns a new function that is a *composition* of all the passed functions. So instead of the above, we can do this:
 
