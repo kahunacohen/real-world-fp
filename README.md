@@ -886,7 +886,7 @@ and we use it like this:
 const fs = require("fs");
 
 const jsonStr = fs.readFileSync("employees.json", {encoding: "utf8"});
-x(jsonStr);
+f(jsonStr);
 ```
 
 Our base functionality is taking a JSON string and transforming it to a two-dimensional array. We'll take out the last function in the pipeline (`join`/`toHTML`) and rename `x` to `employeesToTable`:
