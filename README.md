@@ -311,7 +311,7 @@ with the report format; however, there are some serious problems with our implem
 * it's unnecessarily verbose, which makes it hard to read and introduces more opportunities for bugs.
 * It mutates instance and local variables in-place. Not only is this unnecessary, it makes it harder to reason about. Who changed what variable and where? It also contributes to the verbosity as stated above.
 * Writing tests is unnecessarily hard. Because we are reading and writing to the file system, we have to ensure those files 
-exist, are writable before each test and are removed after.
+exist and are writable before each test and are removed after.
 
 ## A Functional Implementation
 
