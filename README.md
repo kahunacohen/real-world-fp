@@ -570,7 +570,7 @@ The interesting thing about Ramda's `filter` is that if you pass it only one arg
 const { compose, filter } from "ramda";
 
 ...
-const x = compose(
+const f = compose(
   filter(employee => employee.active),
   JSON.parse,
   censor
@@ -626,7 +626,7 @@ Let's add it to our composition:
 
 ```js
 ...
-const x = compose(
+const f = compose(
   sortByLastName,
   filter(employee => employee.active),
   JSON.parse,
@@ -731,7 +731,7 @@ Because it's more concise and declarative it's less likely to be buggy: there's 
 
 ```js
 ...
-const x = compose(
+const f = compose(
   JSONToTable,
   sortByLastName,
   filter(employee => employee.active),
@@ -778,7 +778,7 @@ To output this data structure to CSV we need to join the array on new-lines (act
 const { compose, filter, join } = require("ramda");
 ...
 
-const x = compose(
+const f = compose(
   join("\n"),
   JSONToTable,
   filter(empl => empl.active)
@@ -822,7 +822,7 @@ const toHTML = (tableData) => {
 
 ```js
 ...
-const x = compose(
+const f = compose(
   toHTML,
   // join("\n")
   JSONToTable,
@@ -869,7 +869,7 @@ Let's break out our composition to a function that is common to both a CSV repor
 is what we have now:
 
 ```js
-const x = compose(
+const f = compose(
   toHTML,
   // join("\n")
   JSONToTable,
