@@ -447,6 +447,9 @@ We're going to punt here. Why? Because reading the JSON from the file is impure:
 The point of fp isn't to avoid impurity, rather to isolate it and move it to the periphery of your program logic. In this
 case we can assume the caller of our function will get the raw, employee data. We can assume that `fs.readFileSync` is vetted and tested by the core Nodejs team. With this out of scope, we will be able to test our program without having the setup/teardown cruft that's required when reading and writing to the filesystem.
 
+Likewise, we are going to punt on writing the report to the filesystem. We will let the caller get the report as a string
+and do what it likes with it.
+
 <strike>Read JSON string</strike>
 <br>
 ↓
