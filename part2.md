@@ -33,8 +33,9 @@ employeesToHTML = compose(toHTML, employeesToTable);
 ```
 
 We can obviously debug individual functions that we wrote (e.g. `JSONToTable`) by putting calls to `console` or breakpoints
-in the body of those functions. But what if we want to debug in a clearer way between functions in the pipeline? What we need
-is a function that calls `console` and then simply returns what's passed to it for input to the next function in the chain. [Ramda](https://ramdajs.com/) has a utility function for this called `[tap](https://ramdajs.com/docs/#tap)` that does just this (among other things). So for quick debugging we can stick `tap` in the middle of our pipeline. For example, if we want
+in the body of those functions. But what if we want to debug in a clearer way between functions in the pipeline?
+
+What we need is a function that calls `console` and then simply returns what's passed to it for input to the next function in the chain. [Ramda](https://ramdajs.com/) has a utility function for this called `[tap](https://ramdajs.com/docs/#tap)` that does just this (among other things). So for quick debugging we can stick `tap` in the middle of our pipeline. For example, if we want
 to examine what the data looks like before it's passed to `JSONToTable` we can do this:
 
 ```js
