@@ -43,7 +43,7 @@ const { tap ... } = require("ramda"); // leaving out other imports for brevity.
 ...
 const employeesToTable = compose(
   JSONToTable,
-  **tap(x => console.log(x))**,
+  tap(x => console.log(x)),
   sortByLastName,
   filter(employee => employee.active),
   JSON.parse,
