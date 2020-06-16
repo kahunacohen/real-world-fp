@@ -53,5 +53,5 @@ const employeesToTable = compose(
 
 It's a bit more problematic to put breakpoints in the midst of a composition, but you can always break within an individual
 function in the composition. This is impossible in the filtering function above (`filter(employee => employee.active)`). But
-if a component part of a composition proves too difficult to debug, break it out into a separate, named function so you can
-insert breakpoints.
+if a component part of a composition proves too difficult to debug, factor it out into a separate, named function so you can
+insert breakpoints. Regardless of the programming paradigm this is good practice. Reserve inline functions for no-brainers.
