@@ -63,3 +63,13 @@ This requirement sometimes entails using curried functions. A quick clarificatio
 
 * *currying*: defining a function such that when passed less arguments than expected, the function returns another function which takes the rest of the arguments.
 * *parital application*: *calling* a function with less arguments than expected, producing another function that accepts the rest of the arguments.
+
+Let's look at currying in a bit more detail, given that when composing functions you may need to curry your own funcitons, not just import curried functions in from libraries like Ramda. The classic explanation of currying usually involves currying a `sum` function:
+
+```js
+const sum = (x, y) => y => x + y
+
+const add3 = sum(3);
+
+add3(6); // 9
+```
