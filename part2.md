@@ -73,3 +73,7 @@ const add3 = sum(3);
 
 add3(6); // 9
 ```
+
+Our `sum` function is simply returning another function that will add to the number we first passed. This allows us to easily  "pre-load" functions, or create lots of variations on a base function. In the case of the composition from the previous post we pre-load the filter function, for example, with the callback by passing it in the composition. This gives us a function that receives the rest of the arguments (in this case the array), then passes the return value to the next function in the composition.
+
+Our curried `sum` function above will work for a particular function with only two parameters. Ramda's `curry` function is `variadic`, which means it will work even if you pass it a function with `n` parameters. 
