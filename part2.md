@@ -55,3 +55,11 @@ It's a bit more problematic to put breakpoints in the midst of a composition, bu
 function in the composition. This is impossible in the filtering function above (`filter(employee => employee.active)`). But
 if a component part of a composition proves too difficult to debug, factor it out into a separate, named function so you can
 insert breakpoints. Regardless of the programming paradigm this is good practice. Reserve inline functions for no-brainers.
+
+## Currying/Partial Application
+In the last post we mentioned currying and partial application in passing when we imported `filter` and `join` from ramda and used it in our composition. We used these functions instead of `Array.prototype.filter` and `Array.prototype.join` because the built in functions operate as "methods" on `Array` instead of taking an array as a parameter. We need to build compositions, remember, with functions that take the data we are operating on as inputs, and we need the data to always be the last parameter.
+
+This requirement sometimes entails using curried functions. A quick clarification on terminology:
+
+* *currying*: defining a function such that when passed less arguments than expected, the function returns another function which takes the rest of the arguments.
+* *parital application*: *calling* a function with less arguments than expected, producing another function that accepts the rest of the arguments.
