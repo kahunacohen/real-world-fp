@@ -32,7 +32,7 @@ employeesToCSV = compose(join("\n"), employeesToTable);
 employeesToHTML = compose(toHTML, employeesToTable);
 ```
 
-We can obviously debug individual functions that we wrote (e.g. `JSONToTable`) by putting calls to `console` or breakpoints
+We can debug named functions that we wrote (e.g. `JSONToTable`) by putting calls to `console` or breakpoints
 in the body of those functions. But what if we want to debug in a clearer way between functions in the pipeline?
 
 What we need is a function that calls `console` and then simply returns what's passed to it for input to the next function in the chain. [Ramda](https://ramdajs.com/) has a utility function for this called [`tap`](https://ramdajs.com/docs/#tap) that does just this (among other things). So for quick debugging we can stick `tap` in the middle of our pipeline. For example, if we want
@@ -57,14 +57,12 @@ if a component part of a composition proves too difficult to debug, factor it ou
 insert breakpoints. Regardless of the programming paradigm this is good practice. Reserve inline functions for no-brainers.
 
 ## Currying/Partial Application
-In the last post we mentioned currying and partial application in passing when we imported `filter` and `join` from ramda and used it in our composition. We used these functions instead of `Array.prototype.filter` and `Array.prototype.join` because the built in functions operate as "methods" on `Array` instead of taking an array as a parameter. We need to build compositions, remember, with functions that take the data we are operating on as inputs, and we need the data to always be the last parameter.
-
-This requirement sometimes entails using curried functions. A quick clarification on terminology:
+In the last post we mentioned currying and partial application when we imported `filter` and `join` from ramda and used it in our composition. We used these functions instead of `Array.prototype.filter` and `Array.prototype.join` because these functions on `Array.prototype` operate *on*  `Array` instead of taking an array as a parameter. However, we build compositions with functions that take the data we are operating on as inputs, plus we need the data to always be the last parameter. This requirement often requires using curried functions. A quick clarification on terminology:
 
 * *currying*: defining a function such that when passed less arguments than expected, the function returns another function which takes the rest of the arguments.
 * *parital application*: *calling* a function with less arguments than expected, producing another function that accepts the rest of the arguments.
 
-Let's look at currying in a bit more detail, given that when composing functions you may need to curry your own funcitons, not just import curried functions in from libraries like Ramda. The classic explanation of currying usually involves currying a `sum` function:
+Let's look at currying in a bit more detail. The classic demonstration of currying involves currying a `sum` function:
 
 ```js
 const sum = (x, y) => y => x + y
@@ -74,6 +72,10 @@ const add3 = sum(3);
 add3(6); // 9
 ```
 
-Our `sum` function is simply returning another function that will add to the number we first passed. This allows us to easily  "pre-load" functions, or create lots of variations on a base function. In the case of the composition from the previous post we pre-load the filter function, for example, with the callback by passing it in the composition. This gives us a function that receives the rest of the arguments (in this case the array), then passes the return value to the next function in the composition.
+This function returns another function that will add to the number we first passed. Apart from allowing compositions, currying allows us to easily  "pre-load" functions, or create lots of slight variations on base functions. In the case of the composition from the previous post we pre-load the filter function with the callback by passing it in the composition. This gives us a function that receives the rest of the arguments (in this case the array), then passes the return value to the next function in the composition. Recall:
+
+```js
+
+```
 
 Our curried `sum` function above will work for a particular function with only two parameters. Ramda's `curry` function is `variadic`, which means it will work even if you pass it a function with `n` parameters. 
