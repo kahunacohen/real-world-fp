@@ -57,25 +57,51 @@ if a component part of a composition proves too difficult to debug, factor it ou
 insert breakpoints. Regardless of the programming paradigm this is good practice. Reserve inline functions for no-brainers.
 
 ## Currying/Partial Application
-In the last post we mentioned currying and partial application when we imported `filter` and `join` from ramda and used it in our composition. We used these functions instead of `Array.prototype.filter` and `Array.prototype.join` because these functions on `Array.prototype` operate *on*  `Array` instead of taking an array as a parameter. However, we build compositions with functions that take the data we are operating on as inputs, plus we need the data to always be the last parameter. This requirement often requires using curried functions. A quick clarification on terminology:
 
-* *currying*: defining a function such that when passed less arguments than expected, the function returns another function which takes the rest of the arguments.
-* *parital application*: *calling* a function with less arguments than expected, producing another function that accepts the rest of the arguments.
+In the last post we briefly mentioned currying/partial application in the context of using Ramda for compositions. Let's discuss in more detail currying as it is
+central to fp. The classic demonstration of currying involves currying a `sum` function. Take this for example:
 
-Let's look at currying in a bit more detail. The classic demonstration of currying involves currying a `sum` function:
+```js
+const sum = (x, y) => x + y;
+```
+
+Now let's write a very simple curried version. This version, when passed only `x` will return a function that adds `x` to y:
 
 ```js
 const sum = (x, y) => y => x + y
 
+// Create a new function here.
 const add3 = sum(3);
 
+// call it!
 add3(6); // 9
 ```
 
-This function returns another function that will add to the number we first passed. Apart from allowing compositions, currying allows us to easily  "pre-load" functions, or create lots of slight variations on base functions. In the case of the composition from the previous post we pre-load the filter function with the callback by passing it in the composition. This gives us a function that receives the rest of the arguments (in this case the array), then passes the return value to the next function in the composition. Recall:
+Apart from allowing compositions, currying allows us to easily  "pre-load" functions, or create lots of slight variations on base functions. In the case of the composition from the previous post we imported an already curried filter function, pre-loaded the filter function with the callback by passing it an anonymous function in the composition. This gave us a function that receives the rest of the arguments (in this case the array), then passes the return value to the next function in the composition. 
+
+Recall that `f` receives a JSON string, parses it and filters for active employees:
 
 ```js
+const { compose, filter } from "ramda";
 
+...
+const f = compose(
+  filter(employee => employee.active),
+  JSON.parse,
+  ...
+);
 ```
 
-Our curried `sum` function above will work for a particular function with only two parameters. Ramda's `curry` function is `variadic`, which means it will work even if you pass it a function with `n` parameters. 
+Let's take a break for a quick clarification on terminology:
+
+* *currying*: defining a function such that when passed less arguments than expected, the function returns another function which takes the rest of the arguments.
+* *parital application*: *calling* a function with less arguments than expected, producing another function that accepts the rest of the arguments.
+
+Libraries like Ramda usually export functions that are already curried, but when writing your own functions that you intend on composing with other functions
+you will sometimes need to curry for yourself. Our curried `sum` function that we wrote above is naive:
+
+We can generalize currying for functions with two arguments thus:
+
+```js
+const curry2 = f => {}  
+```
