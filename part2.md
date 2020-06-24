@@ -106,9 +106,12 @@ const _sum = (x, y) => x + y;
 _sum(1, 3)
 4
 
+_sum(1);
+NaN // because 1 + undefined is Nan.
+
 const sum = R.curry(_sum); // Here R is an import of Ramda
 
-//calling with less args returns a function ready for the next argument
+// Calling with less args now returns a function ready for the next argument
 sum(1);
 ƒ (a0, a1) { return fn.apply(this, arguments); } 
 
