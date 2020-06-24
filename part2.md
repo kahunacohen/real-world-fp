@@ -98,10 +98,24 @@ Let's take a break for a quick clarification on terminology:
 * *parital application*: *calling* a function with less arguments than expected, producing another function that accepts the rest of the arguments.
 
 Libraries like Ramda usually export functions that are already curried, but when writing your own functions that you intend on composing with other functions
-you will sometimes need to curry for yourself. Our curried `sum` function that we wrote above is naive:
-
-We can generalize currying for functions with two arguments thus:
+you will sometimes need to curry for yourself, which is why Ramda exports a `curry` function that will curry any function regardless of how many arguments the
+function takes:
 
 ```js
-const curry2 = f => {}  
+const _sum = (x, y) => x + y;
+_sum(1, 3)
+4
+
+const sum = R.curry(_sum); // Here R is an import of Ramda
+
+//calling with less args returns a function ready for the next argument
+sum(1);
+ƒ (a0, a1) { return fn.apply(this, arguments); } 
+
+sum(1)(3)
+4
+
+const addOne = sum(1);
+addOne(3)
+4
 ```
