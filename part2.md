@@ -122,3 +122,53 @@ const addOne = sum(1);
 addOne(3)
 4
 ```
+
+Summing numbers is fine and dandy, but let's apply this to the real-world, or at least to our running example. Let's say our `sortByLastName` function
+needs to be more flexible because we are asked to produce different reports, one sorted by last name descending and one sorted ascending. So, let's parameterize
+it:
+
+```js
+const sortByLastName2 = (xs, order) => {
+  // Ignore case of order being undefined.
+  return xs.sort((firstEl, secondEl) => {
+    if (firstEl.lastName < secondEl.lastName) {
+      return order === "desc" ? -1 : 1;
+    }
+    if (firstEl.lastName > secondEl.lastName) {
+      return order === "desc" ? 1 : -1;
+    }
+    return 0;
+  });
+};
+
+// Call it like this:
+sortByLastName2(
+  [{ lastName: "B" }, { lastName: "A" }, { lastName: "C" }],
+    "asc"
+); 
+// [{lastName: "C"}, {lastName: "B"}, {lastName: "A"}]
+
+```
+
+This works in isolation, but in our composition it doesn't:
+
+```js
+...
+const employeesToTable = compose(
+  JSONToTable,
+  sortByLastName2("desc"),
+  filter(employee => employee.active),
+  JSON.parse,
+  censor
+);
+TypeError: xs.sort is not a function
+```
+
+Why does this cause an error?
+
+Because `sortByLastName2` thinks that its `xs` parameter (the array of employees) is "asc", given that `xs` is the first argument in its signature.
+`filter` is passing `sortByLastName2` the filtered array, but we are passing `sortByLastName1` "asc", so "asc" is overwriting the employee data and because
+"asc" does not have a `sort` function on its prototype JavaScript throws an error.
+
+So, let's try to solve this by switching `sortByLastName`'s signature to take the array of employees last:
+
