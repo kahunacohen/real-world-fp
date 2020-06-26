@@ -56,28 +56,29 @@ function in the composition. This is impossible in the filtering function above 
 if a component part of a composition proves too difficult to debug, factor it out into a separate, named function so you can
 insert breakpoints. Regardless of the programming paradigm this is good practice. Reserve inline functions for no-brainers.
 
-## Currying/Partial Application
+## Currying
 
 In the last post we briefly mentioned currying/partial application in the context of using Ramda for compositions. Let's discuss in more detail currying as it is
-central to fp and makes function composition possible. The classic demonstration of currying involves currying a `sum` function:
+central to fp and makes function composition possible. The classic explanation is a `sum` function:
 
 ```js
+// Not curried.
 const sum = (x, y) => x + y;
 ```
 
-Now let's write a simple curried version. This version, when passed only `x` will return a function that adds `x` to y:
+Here's a curried version. When we pass only `x` it will return a *function* that adds `x` to y:
 
 ```js
 const sum = (x, y) => y => x + y
 
-// Create a new function here.
+// sum(x) returns a function that then accepts y:
 const add3 = sum(3);
 
 // call it!
 add3(6); // 9
 ```
 
-Apart from allowing compositions, currying allows us to easily  "pre-load" functions, or create lots of slight variations on base functions. In the case of the composition from the previous post we imported an already curried filter function, pre-loaded the filter function with the callback by passing it an anonymous function in the composition. This gave us a function that receives the rest of the arguments (in this case the array), then passes the return value to the next function in the composition. 
+Apart from allowing compositions, currying allows us to easily  preload functions, or create lots of slight variations on base functions. In the case of the composition from the previous post we imported an already curried filter function, preloaded the filter function with the callback by passing it an anonymous function in the composition. This gave us a function that receives the rest of the arguments (in this case the array), then passes the return value to the next function in the composition. 
 
 Recall that `f` receives a JSON string, parses it and filters for active employees:
 
@@ -92,12 +93,7 @@ const f = compose(
 );
 ```
 
-Let's take a break for a quick clarification on terminology:
-
-* *currying*: defining a function such that when passed less arguments than expected, the function returns another function which takes the rest of the arguments.
-* *parital application*: *calling* a function with less arguments than expected, producing another function that accepts the rest of the arguments.
-
-Libraries like Ramda usually export functions that are already curried, but when writing your own functions that you intend on composing with other functions
+Libraries like Ramda usually export functions that are already curried, but when writing your own functions which you intend on composing with other functions
 you will sometimes need to curry for yourself, which is why Ramda exports a `curry` function that will curry any function regardless of how many arguments the
 function takes:
 
@@ -123,7 +119,7 @@ addOne(3)
 4
 ```
 
-Summing numbers is fine and dandy, but let's apply this to the real-world, or at least to our running example. Let's say our `sortByLastName` function
+Summing numbers is fine and dandy, but let's apply this to real workd programming. Let's say our `sortByLastName` function
 needs to be more flexible because we are asked to produce different reports, one sorted by last name descending and one sorted ascending. So, let's parameterize
 it:
 
@@ -167,10 +163,10 @@ TypeError: xs.sort is not a function
 Why does this cause an error?
 
 Because `sortByLastName2` thinks that its `xs` parameter (the array of employees) is "asc", given that `xs` is the first argument in its signature.
-`filter` is passing `sortByLastName2` the filtered array, but we are passing "asc" to`sortByLastName1`, so "asc" is overwriting the employee data and because
+`filter` is passing `sortByLastName2` the filtered array, but we are passing "asc" to`sortByLastName1`, so "asc" is overwriting the employee data. Because
 "asc" does not have a `sort` function on its prototype JavaScript throws an error.
 
-If we change the signature of `sortByLastName1`, so that the array is the last parameter, we'll have a similar problem: `TypeError: Cannot read property 'sort' of undefined`. Why? Because when we invoke `sortByLastName3` within the composition with the "desc" argument, that's it...the function is called with only one parameter--`xs` is `undefined` and we can't call `sort` on `undefined`.
+If we change the signature of `sortByLastName1`, so that the array is the last parameter, we'll have a similar problem: `TypeError: Cannot read property 'sort' of undefined`. Why? Because when we invoke `sortByLastName3` within the composition by passing the "desc" argument, that's it...the function is called with only one parameter--the `order` argument. `xs`. is `undefined` and we can't call `sort` on `undefined`.
 
-What we need is a function that when passed the `order` argument, we get a function back that accepts the next argument: `xs`. That is exactly what currying accomplishes for us.
+What we need is a function that when passed the `order` argument, we'll get a function back that accepts the next argument: `xs`. That is exactly what currying accomplishes for us.
 
