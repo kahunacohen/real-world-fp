@@ -167,8 +167,10 @@ TypeError: xs.sort is not a function
 Why does this cause an error?
 
 Because `sortByLastName2` thinks that its `xs` parameter (the array of employees) is "asc", given that `xs` is the first argument in its signature.
-`filter` is passing `sortByLastName2` the filtered array, but we are passing `sortByLastName1` "asc", so "asc" is overwriting the employee data and because
+`filter` is passing `sortByLastName2` the filtered array, but we are passing "asc" to`sortByLastName1`, so "asc" is overwriting the employee data and because
 "asc" does not have a `sort` function on its prototype JavaScript throws an error.
 
-So, let's try to solve this by switching `sortByLastName`'s signature to take the array of employees last:
+If we change the signature of `sortByLastName1`, so that the array is the last parameter, we'll have a similar problem: `TypeError: Cannot read property 'sort' of undefined`. Why? Because when we invoke `sortByLastName3` within the composition with the "desc" argument, that's it...the function is called with only one parameter--`xs` is `undefined` and we can't call `sort` on `undefined`.
+
+What we need is a function that when passed the `order` argument, we get a function back that accepts the next argument: `xs`. That is exactly what currying accomplishes for us.
 
