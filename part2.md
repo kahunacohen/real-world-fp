@@ -59,13 +59,13 @@ insert breakpoints. Regardless of the programming paradigm this is good practice
 ## Currying/Partial Application
 
 In the last post we briefly mentioned currying/partial application in the context of using Ramda for compositions. Let's discuss in more detail currying as it is
-central to fp. The classic demonstration of currying involves currying a `sum` function. Take this for example:
+central to fp and makes function composition possible. The classic demonstration of currying involves currying a `sum` function:
 
 ```js
 const sum = (x, y) => x + y;
 ```
 
-Now let's write a very simple curried version. This version, when passed only `x` will return a function that adds `x` to y:
+Now let's write a simple curried version. This version, when passed only `x` will return a function that adds `x` to y:
 
 ```js
 const sum = (x, y) => y => x + y
