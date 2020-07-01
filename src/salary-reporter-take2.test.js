@@ -87,3 +87,77 @@ describe("employees", () => {
     );
   });
 });
+
+const sortByLastName2 = (xs, order) => {
+  console.log(xs);
+  console.log(order);
+  return xs.sort((firstEl, secondEl) => {
+    if (firstEl.lastName < secondEl.lastName) {
+      return order === "desc" ? -1 : 1;
+    }
+    if (firstEl.lastName > secondEl.lastName) {
+      return order === "desc" ? 1 : -1;
+    }
+    return 0;
+  });
+};
+const sortByLastName3 = (order, xs) => {
+  console.log(xs);
+  console.log(order);
+  return xs.sort((firstEl, secondEl) => {
+    if (firstEl.lastName < secondEl.lastName) {
+      return order === "desc" ? -1 : 1;
+    }
+    if (firstEl.lastName > secondEl.lastName) {
+      return order === "desc" ? 1 : -1;
+    }
+    return 0;
+  });
+};
+
+describe("parameterized sort fn", () => {
+  let employeesStr;
+  beforeAll(() => {
+    employeesStr = fs.readFileSync(`${__dirname}/employees.json`, {
+      encoding: "utf-8",
+    });
+  });
+  it("sorts desc", () => {
+    expect(
+      sortByLastName2(
+        [{ lastName: "B" }, { lastName: "A" }, { lastName: "C" }],
+        "desc"
+      )
+    ).toEqual([{ lastName: "A" }, { lastName: "B" }, { lastName: "C" }]);
+  });
+  it("sorts asc", () => {
+    expect(
+      sortByLastName2(
+        [{ lastName: "B" }, { lastName: "A" }, { lastName: "C" }],
+        "asc"
+      )
+    ).toEqual([{ lastName: "C" }, { lastName: "B" }, { lastName: "A" }]);
+  });
+  it("throws a type error when not curried and order is the last parameter", () => {
+    expect(() => {
+      compose(
+        JSONtoTable,
+        sortByLastName2("desc"),
+        filter((x) => x.active),
+        JSON.parse,
+        censor
+      );
+    }).toThrow(TypeError);
+  });
+  it("causes an error when not curried and the array is last parameter", () => {
+    expect(() => {
+      compose(
+        JSONtoTable,
+        sortByLastName3("desc"),
+        filter((x) => x.active),
+        JSON.parse,
+        censor
+      );
+    }).toThrow(TypeError);
+  });
+});
