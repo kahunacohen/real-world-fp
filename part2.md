@@ -72,13 +72,15 @@ Here's a curried version. When we pass only `x` it will return a *function* that
 const sum = (x, y) => y => x + y
 
 // sum(x) returns a function that then accepts y:
-const add3 = sum(3);
+sum(3)(3); // 6
 
-// call it!
-add3(6); // 9
+// or
+const add3 = sum(3);
+add3(3); // 6
+add3(100); // 103
 ```
 
-Apart from allowing compositions, currying allows us to easily  preload functions, or create lots of slight variations on base functions. In the case of the composition from the previous post we imported an already curried filter function, preloaded the filter function with the callback by passing it an anonymous function in the composition. This gave us a function that receives the rest of the arguments (in this case the array), then passes the return value to the next function in the composition. 
+Currying allows us to easily  preload functions, or create lots of slight variations on base functions. In the case of the composition from the previous post we imported an already curried filter function, preloaded the filter function with the callback by passing it an anonymous function in the composition. This gave us a function that receives the rest of the arguments (in this case the array), then passes the return value to the next function in the composition. 
 
 Recall that `f` receives a JSON string, parses it and filters for active employees:
 
