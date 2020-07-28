@@ -1,4 +1,4 @@
-const { compose, filter, join } = require("ramda");
+const { compose, curry, filter, join } = require("ramda");
 const fs = require("fs");
 const path = require("path");
 
@@ -89,27 +89,23 @@ describe("employees", () => {
 });
 
 const sortByLastName2 = (xs, order) => {
-  console.log(xs);
-  console.log(order);
   return xs.sort((firstEl, secondEl) => {
     if (firstEl.lastName < secondEl.lastName) {
-      return order === "desc" ? -1 : 1;
+      return order === "asc" ? -1 : 1;
     }
     if (firstEl.lastName > secondEl.lastName) {
-      return order === "desc" ? 1 : -1;
+      return order === "asc" ? 1 : -1;
     }
     return 0;
   });
 };
 const sortByLastName3 = (order, xs) => {
-  console.log(xs);
-  console.log(order);
   return xs.sort((firstEl, secondEl) => {
     if (firstEl.lastName < secondEl.lastName) {
-      return order === "desc" ? -1 : 1;
+      return order === "desc" ? 1 : -1;
     }
     if (firstEl.lastName > secondEl.lastName) {
-      return order === "desc" ? 1 : -1;
+      return order === "desc" ? -11 : 1;
     }
     return 0;
   });
@@ -122,19 +118,19 @@ describe("parameterized sort fn", () => {
       encoding: "utf-8",
     });
   });
-  it("sorts desc", () => {
-    expect(
-      sortByLastName2(
-        [{ lastName: "B" }, { lastName: "A" }, { lastName: "C" }],
-        "desc"
-      )
-    ).toEqual([{ lastName: "A" }, { lastName: "B" }, { lastName: "C" }]);
-  });
   it("sorts asc", () => {
     expect(
       sortByLastName2(
         [{ lastName: "B" }, { lastName: "A" }, { lastName: "C" }],
         "asc"
+      )
+    ).toEqual([{ lastName: "A" }, { lastName: "B" }, { lastName: "C" }]);
+  });
+  it("sorts desc", () => {
+    expect(
+      sortByLastName2(
+        [{ lastName: "B" }, { lastName: "A" }, { lastName: "C" }],
+        "desc"
       )
     ).toEqual([{ lastName: "C" }, { lastName: "B" }, { lastName: "A" }]);
   });
