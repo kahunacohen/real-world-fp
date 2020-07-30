@@ -159,6 +159,8 @@ const employeesToTable = compose(
   JSON.parse,
   censor
 );
+
+employeesToTable(employees);
 TypeError: xs.sort is not a function
 ```
 
